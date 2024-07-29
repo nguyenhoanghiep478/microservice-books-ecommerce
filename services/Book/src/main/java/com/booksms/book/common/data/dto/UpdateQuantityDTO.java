@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 public class UpdateQuantityDTO {
     @NotNull(message = "quantity cannot null")
-    @Size(min = 1)
     private int quantity;
     @NotNull(message="type cannot null")
     private OrderType type;

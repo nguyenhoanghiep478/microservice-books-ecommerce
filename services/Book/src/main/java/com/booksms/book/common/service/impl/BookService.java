@@ -1,8 +1,9 @@
 package com.booksms.book.common.service.impl;
 
 import com.booksms.book.common.data.GenericMapper;
-import com.booksms.book.common.data.dto.BookDTO;
 import com.booksms.book.common.data.dto.OrderType;
+import com.booksms.book.common.data.dto.Request.BookRequestDTO;
+import com.booksms.book.common.data.dto.ShortBookDTO;
 import com.booksms.book.common.data.dto.UpdateQuantityDTO;
 import com.booksms.book.common.data.entity.Book;
 import com.booksms.book.common.data.entity.Category;
@@ -13,12 +14,13 @@ import com.booksms.book.start.Config.exception.BookNotFoundException;
 import com.booksms.book.start.Config.exception.CategoryNotFoundException;
 import com.booksms.book.start.Config.exception.InSufficientQuantityException;
 import com.sun.jdi.InternalException;
-import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -26,48 +28,50 @@ import java.util.Optional;
 public class BookService implements IBookService{
     private final BookRepository repository;
     private final CategoryRepository categoryRepository;
-    private final GenericMapper<Book,BookDTO,BookDTO> bookMapper;
+    private final GenericMapper<Book, BookRequestDTO, BookRequestDTO> bookMapper;
+    private final GenericMapper<Book, ShortBookDTO, ShortBookDTO> shortBookMapper;
+
     @Override
-    public List<BookDTO> findAll() {
+    public List<BookRequestDTO> findAll() {
         List<Book> books = repository.findAll();
         if(books.isEmpty()){
             throw new InternalException("some thing wrong, please try again");
         }
-        List<BookDTO> bookDTOS = bookMapper.toListResponse(books,BookDTO.class);
-        if(bookDTOS.isEmpty()){
+        List<BookRequestDTO> bookRequestDTOS = bookMapper.toListResponse(books, BookRequestDTO.class);
+        if(bookRequestDTOS.isEmpty()){
             throw new InternalException("some thing wrong, please try again");
         }
-        return bookDTOS;
+        return bookRequestDTOS;
     }
 
     @Override
-    public BookDTO findById(int id) {
+    public BookRequestDTO findById(int id) {
         Optional<Book> book = repository.findById(id);
         if(book.isEmpty()){
             throw new BookNotFoundException(String.format("Book with id %s not found", id));
         }
-        BookDTO bookDTO = bookMapper.toResponse(book.get(), BookDTO.class);
-        if(bookDTO==null){
+        BookRequestDTO bookRequestDTO = bookMapper.toResponse(book.get(), BookRequestDTO.class);
+        if(bookRequestDTO ==null){
             throw new InternalException("some thing wrong , please try again");
         }
-        return bookDTO;
+        return bookRequestDTO;
     }
 
     @Override
-    public BookDTO findByName(String name) {
+    public BookRequestDTO findByName(String name) {
         Optional<Book> book = repository.findByName(name);
         if(book.isEmpty()){
             throw new BookNotFoundException(String.format("Book with name %s not found", name));
         }
-        BookDTO bookDTO = bookMapper.toResponse(book.get(), BookDTO.class);
-        if(bookDTO==null){
+        BookRequestDTO bookRequestDTO = bookMapper.toResponse(book.get(), BookRequestDTO.class);
+        if(bookRequestDTO ==null){
             throw new InternalException("some thing wrong , please try again");
         }
-        return bookDTO;
+        return bookRequestDTO;
     }
 
     @Override
-    public List<BookDTO> findByCategoryId(int categoryId) {
+    public List<BookRequestDTO> findByCategoryId(int categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(
                 () ->  new CategoryNotFoundException(String.format("Category with id %s not found", categoryId))
         );
@@ -75,15 +79,15 @@ public class BookService implements IBookService{
         if(results.isEmpty()){
             throw new BookNotFoundException(String.format("Book with category %s not found", category.getName()));
         }
-        List<BookDTO> bookDTOS = bookMapper.toListResponse(results,BookDTO.class);
-        if(bookDTOS.isEmpty()){
+        List<BookRequestDTO> bookRequestDTOS = bookMapper.toListResponse(results, BookRequestDTO.class);
+        if(bookRequestDTOS.isEmpty()){
             throw new InternalException("some thing wrong , please try again");
         }
-        return bookDTOS;
+        return bookRequestDTOS;
     }
 
     @Override
-    public List<BookDTO> findByCategoryIdAndName(int categoryId, String name) {
+    public List<BookRequestDTO> findByCategoryIdAndName(int categoryId, String name) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(
                 () -> new CategoryNotFoundException(String.format("Category with id %s not found", categoryId))
         );
@@ -95,39 +99,44 @@ public class BookService implements IBookService{
         if(booksWithCategoryIdAndName.isEmpty()){
             throw new BookNotFoundException(String.format("Book with category: %s and book name: %s not found", category.getName(),name));
         }
-        List<BookDTO> bookDTOS = bookMapper.toListResponse(booksWithCategoryIdAndName,BookDTO.class);
-        if(bookDTOS.isEmpty()){
+        List<BookRequestDTO> bookRequestDTOS = bookMapper.toListResponse(booksWithCategoryIdAndName, BookRequestDTO.class);
+        if(bookRequestDTOS.isEmpty()){
             throw new InternalException("some thing wrong , please try again");
         }
-        return bookDTOS;
+        return bookRequestDTOS;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BookDTO insert(BookDTO request) {
+    public BookRequestDTO insert(BookRequestDTO request) {
         Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(
                 () -> new CategoryNotFoundException(String.format("Category with id %s not found", request.getCategoryId()))
         );
         Optional<Book> bookInDb = repository.findByName(request.getName());
         if(bookInDb.isPresent()){
-            BookDTO updateRequest = BookDTO.builder()
-                    .availableQuantity(bookInDb.get().getAvailableQuantity()+1)
+            int addAmount = 1;
+            if(request.getAvailableQuantity() != null){
+                addAmount = request.getAvailableQuantity();
+            }
+            BookRequestDTO updateRequest = BookRequestDTO.builder()
+                    .availableQuantity(bookInDb.get().getAvailableQuantity()+addAmount)
+                    .categoryId(request.getCategoryId())
                     .build();
             return this.updateById(bookInDb.get().getId(), updateRequest);
         }
         Book book = bookMapper.toEntity(request, Book.class);
         book.setCategory(category);
         book = repository.save(book);
-        BookDTO bookDTO = bookMapper.toResponse(book, BookDTO.class);
-        if(bookDTO==null){
+        BookRequestDTO bookRequestDTO = bookMapper.toResponse(book, BookRequestDTO.class);
+        if(bookRequestDTO ==null){
             throw new InternalException("some thing wrong , please try again");
         }
-        return bookDTO;
+        return bookRequestDTO;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BookDTO updateById(int id, BookDTO request) {
+    public BookRequestDTO updateById(int id, BookRequestDTO request) {
         Optional<Book> book = repository.findById(id);
         if(book.isEmpty()){
             throw new BookNotFoundException(String.format("Book with id %s not found", id));
@@ -135,34 +144,33 @@ public class BookService implements IBookService{
         Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(
                 () -> new CategoryNotFoundException(String.format("Category with id %s not found", request.getCategoryId()))
         );
-        Book mergeBook = bookMapper.toEntity(request, Book.class);
-        mergeBook.setCategory(category);
-        mergeBook = repository.save(mergeBook);
-        BookDTO bookDTO = bookMapper.toResponse(mergeBook, BookDTO.class);
-        if(bookDTO==null){
+        Book mergeBook = mergeBook(book.get(),request);
+        repository.save(mergeBook);
+        BookRequestDTO bookRequestDTO = bookMapper.toResponse(mergeBook, BookRequestDTO.class);
+        if(bookRequestDTO ==null){
             throw new InternalException("some thing wrong , please try again");
         }
-        return bookDTO;
+        return bookRequestDTO;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BookDTO deleteById(int id) {
+    public BookRequestDTO deleteById(int id) {
         Optional<Book> book = repository.findById(id);
         if(book.isEmpty()){
             throw new BookNotFoundException(String.format("Book with id %s not found", id));
         }
         repository.deleteById(id);
-        BookDTO bookDTO = bookMapper.toResponse(book.get(), BookDTO.class);
-        if(bookDTO==null){
+        BookRequestDTO bookRequestDTO = bookMapper.toResponse(book.get(), BookRequestDTO.class);
+        if(bookRequestDTO ==null){
             throw new InternalException("some thing wrong , please try again");
         }
-        return bookDTO;
+        return bookRequestDTO;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BookDTO updateQuantityById(int id, UpdateQuantityDTO request) {
+    public BookRequestDTO updateQuantityById(int id, UpdateQuantityDTO request) {
 
         Book book = repository.findById(id).orElseThrow(
                 () -> new BookNotFoundException(String.format("Book with id %s not found", id))
@@ -170,21 +178,60 @@ public class BookService implements IBookService{
         if(request.getType() == OrderType.BUY){
             book.setAvailableQuantity(request.getQuantity()+book.getAvailableQuantity());
             book = repository.save(book);
-            BookDTO bookDTO = bookMapper.toResponse(book, BookDTO.class);
-            if(bookDTO==null){
+            BookRequestDTO bookRequestDTO = bookMapper.toResponse(book, BookRequestDTO.class);
+            if(bookRequestDTO ==null){
                 throw new InternalException("some thing wrong , please try again");
             }
-            return bookDTO;
+            return bookRequestDTO;
         }
         if(book.getAvailableQuantity()< request.getQuantity()){
             throw new InSufficientQuantityException("over sufficient quantity,please try again");
         }
         book.setAvailableQuantity(book.getAvailableQuantity()-request.getQuantity());
         book = repository.save(book);
-        BookDTO bookDTO = bookMapper.toResponse(book, BookDTO.class);
-        if(bookDTO==null){
+        BookRequestDTO bookRequestDTO = bookMapper.toResponse(book, BookRequestDTO.class);
+        if(bookRequestDTO ==null){
             throw new InternalException("some thing wrong , please try again");
         }
-        return bookDTO;
+        return bookRequestDTO;
+    }
+
+    @Override
+    public List<ShortBookDTO> findAllInStock() {
+        List<Book> books = repository.findByIsInStockTrue();
+        if(books.isEmpty()){
+            return null;
+        }
+        List<ShortBookDTO> shortBookDTOS = shortBookMapper.toListResponse(books, ShortBookDTO.class);
+        if(shortBookDTOS == null || shortBookDTOS.isEmpty()){
+            throw new InternalException("some thing wrong , please try again");
+        }
+        return shortBookDTOS;
+    }
+
+    private Book mergeBook(Book book, BookRequestDTO bookRequestDTO) {
+       if(bookRequestDTO.getName()!= null && !Objects.equals(book.getName(), bookRequestDTO.getName())){
+           book.setName(bookRequestDTO.getName());
+       }
+       if( bookRequestDTO.getAvailableQuantity() != null && book.getAvailableQuantity()!= bookRequestDTO.getAvailableQuantity()){
+           book.setAvailableQuantity(bookRequestDTO.getAvailableQuantity());
+       }
+       if( bookRequestDTO.getCategoryId() != null && book.getCategory().getId() != bookRequestDTO.getCategoryId()){
+           Category category = categoryRepository.findById(bookRequestDTO.getCategoryId()).orElseThrow(
+                   ()-> new CategoryNotFoundException(String.format("Category with id %s not found", bookRequestDTO.getCategoryId()))
+           );
+           book.setCategory(category);
+       }
+       if(bookRequestDTO.getPrice()!= null && !Objects.equals(book.getPrice(), bookRequestDTO.getPrice())){
+           book.setPrice(bookRequestDTO.getPrice());
+       }
+       if(bookRequestDTO.getChapter() != null && !Objects.equals(book.getChapter(), bookRequestDTO.getChapter())){
+           book.setChapter(bookRequestDTO.getChapter());
+       }
+       if(bookRequestDTO.getTitle() != null && !Objects.equals(book.getTitle(), bookRequestDTO.getTitle())){
+           book.setTitle(bookRequestDTO.getTitle());
+       }
+       book.setInStock(bookRequestDTO.isInStock());
+       return book;
     }
 }

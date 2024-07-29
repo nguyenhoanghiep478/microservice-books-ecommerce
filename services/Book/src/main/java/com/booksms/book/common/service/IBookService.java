@@ -1,22 +1,25 @@
 package com.booksms.book.common.service;
 
-import com.booksms.book.common.data.dto.BookDTO;
+import com.booksms.book.common.data.dto.Request.BookRequestDTO;
+import com.booksms.book.common.data.dto.ShortBookDTO;
 import com.booksms.book.common.data.dto.UpdateQuantityDTO;
 
 import java.util.List;
 
 public interface IBookService {
-    List<BookDTO> findAll();
+    List<BookRequestDTO> findAll();
 
-    BookDTO findById(int id);
-    BookDTO findByName(String name);
-    List<BookDTO> findByCategoryId(int categoryId);
-    List<BookDTO> findByCategoryIdAndName(int categoryId, String name);
-    BookDTO insert(BookDTO request);
+    BookRequestDTO findById(int id);
+    BookRequestDTO findByName(String name);
+    List<BookRequestDTO> findByCategoryId(int categoryId);
+    List<BookRequestDTO> findByCategoryIdAndName(int categoryId, String name);
+    BookRequestDTO insert(BookRequestDTO request);
 
-    BookDTO updateById(int id,BookDTO request);
+    BookRequestDTO updateById(int id, BookRequestDTO request);
 
-    BookDTO deleteById(int id);
+    BookRequestDTO deleteById(int id);
 
-    BookDTO updateQuantityById(int id, UpdateQuantityDTO request);
+    BookRequestDTO updateQuantityById(int id, UpdateQuantityDTO request);
+
+    List<ShortBookDTO> findAllInStock();
 }

@@ -1,31 +1,32 @@
-package com.booksms.book.common.data.dto;
+package com.booksms.book.common.data.dto.Request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Builder
-public class BookDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+public class BookRequestDTO {
+    private Integer id;
     @NotNull(message = "book title is required")
     private String title;
     @NotNull(message = "book name is required")
     private String name;
     @NotNull(message = "categoryId is required")
-    private int categoryId;
+    private Integer categoryId;
     @NotNull(message = "price is required")
-    @Size(min = 0)
+    @Digits(integer = 10, fraction = 2)
     private BigDecimal price;
     @NotNull(message = "available quantity is required")
-    @Size(min = 0)
-    @JsonIgnore
-    private int availableQuantity;
+    private Integer availableQuantity;
     @NotNull(message = "image for book is required")
     private String image;
+    @NotNull(message = "chapter is required to audit version")
+    private Integer chapter;
+    private boolean isInStock;
 }

@@ -1,7 +1,8 @@
 package com.booksms.book.start.Controller;
 
-import com.booksms.book.common.data.dto.BookDTO;
+import com.booksms.book.common.data.dto.Request.BookRequestDTO;
 import com.booksms.book.common.data.dto.ResponseDTO;
+import com.booksms.book.common.data.dto.ShortBookDTO;
 import com.booksms.book.common.data.dto.UpdateQuantityDTO;
 import com.booksms.book.common.service.IBookService;
 import jakarta.validation.Valid;
@@ -20,7 +21,7 @@ public class BookController {
     @GetMapping("/get-all")
     public ResponseEntity<?> GetAllBook() {
         //get listDTO
-        List<BookDTO> results = service.findAll();
+        List<BookRequestDTO> results = service.findAll();
         return ResponseEntity.ok(ResponseDTO.builder()
                         .message(Arrays.asList("getAllBookSuccessful"))
                         .status(201)
@@ -28,10 +29,22 @@ public class BookController {
                         .result(results)
                 .build());
     }
+    @GetMapping("/get-all-in-stock")
+    public ResponseEntity<?> GetAllBookInStock() {
+        //get listDTO
+        List<ShortBookDTO> results = service.findAllInStock();
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message(Arrays.asList("getAllBookSuccessful"))
+                .status(201)
+                //return list dto
+                .result(results)
+                .build());
+    }
+
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity<?> GetBookById(@PathVariable int id) {
         //get bookDTO
-        BookDTO result = service.findById(id);
+        BookRequestDTO result = service.findById(id);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("getBookByIdSuccessful"))
                 .status(200)
@@ -41,7 +54,7 @@ public class BookController {
     }
     @GetMapping("/get-by-name/{name}")
     public ResponseEntity<?> GetBookByName(@PathVariable String name) {
-        BookDTO result = service.findByName(name);
+        BookRequestDTO result = service.findByName(name);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("getBookByNameSuccessful"))
                 .status(200)
@@ -49,9 +62,9 @@ public class BookController {
                 .build()
         );
     }
-    @GetMapping("/get-by-name/{categoryId}")
+    @GetMapping("/get-by-categoryId/{categoryId}")
     public ResponseEntity<?> GetBooksByCategory(@PathVariable int categoryId) {
-        List<BookDTO> result = service.findByCategoryId(categoryId);
+        List<BookRequestDTO> result = service.findByCategoryId(categoryId);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(List.of("getBooksByCategorySuccessful"))
                 .status(200)
@@ -61,7 +74,7 @@ public class BookController {
     }
     @GetMapping("/get-by-name/{name}/{categoryId}")
     public ResponseEntity<?> GetBooksByCategoryAndName(@PathVariable String name,@PathVariable int categoryId) {
-        List<BookDTO> result = service.findByCategoryIdAndName(categoryId,name);
+        List<BookRequestDTO> result = service.findByCategoryIdAndName(categoryId,name);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(List.of("getBooksByCategorySuccessful"))
                 .status(200)
@@ -117,29 +130,29 @@ public class BookController {
         );
     }
     @PostMapping("/create")
-    public ResponseEntity<?> CreateBook(@RequestBody @Valid BookDTO request){
+    public ResponseEntity<?> CreateBook(@RequestBody @Valid BookRequestDTO request){
         //create new book
-        BookDTO result = service.insert(request);
+        BookRequestDTO result = service.insert(request);
         return ResponseEntity.ok(ResponseDTO.builder()
                         .message(Arrays.asList("createBookSuccessful"))
                         .status(200)
                         .result(result)
                         .build());
     }
-    @PutMapping("/{id}/update-quantity")
+    @PostMapping("/{id}/update-quantity")
     public ResponseEntity<?> UpdateBookQuantity(@PathVariable int id, @RequestBody @Valid UpdateQuantityDTO request){
-        BookDTO bookDTO = service.updateQuantityById(id,request);
+        BookRequestDTO bookRequestDTO = service.updateQuantityById(id,request);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("updateBookQuantitySuccessful"))
                 .status(200)
-                .result(bookDTO)
+                .result(bookRequestDTO)
                 .build());
     }
 
     @PutMapping("/update-book-by-id/{id}")
-    public ResponseEntity<?> UpdateBookById(@PathVariable int id,@RequestBody @Valid BookDTO request){
+    public ResponseEntity<?> UpdateBookById(@PathVariable int id,@RequestBody @Valid BookRequestDTO request){
         //update new book
-        BookDTO result = service.updateById(id,request);
+        BookRequestDTO result = service.updateById(id,request);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("updateBookSuccessful"))
                 .status(200)
@@ -149,7 +162,7 @@ public class BookController {
     @DeleteMapping("/delete-book-by-id/{id}")
     public ResponseEntity<?> DeleteBookById(@PathVariable int id){
         //delete new book
-        BookDTO result = service.deleteById(id);
+        BookRequestDTO result = service.deleteById(id);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("deleteBookSuccessful"))
                 .status(200)

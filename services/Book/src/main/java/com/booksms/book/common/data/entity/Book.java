@@ -3,12 +3,8 @@ package com.booksms.book.common.data.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.AbstractAuditable_;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -27,4 +23,5 @@ public class Book extends AbstractEntity{
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id",nullable = false)
     private Category category;
+    
 }

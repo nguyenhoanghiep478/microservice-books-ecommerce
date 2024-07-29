@@ -1,9 +1,7 @@
 package com.booksms.book.common.service.impl;
 
 import com.booksms.book.common.data.GenericMapper;
-import com.booksms.book.common.data.dto.BookDTO;
 import com.booksms.book.common.data.dto.CategoryDTO;
-import com.booksms.book.common.data.entity.Book;
 import com.booksms.book.common.data.entity.Category;
 import com.booksms.book.common.data.repository.CategoryRepository;
 import com.booksms.book.common.service.ICategoryService;

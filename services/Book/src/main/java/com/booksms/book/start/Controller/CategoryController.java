@@ -1,16 +1,13 @@
 package com.booksms.book.start.Controller;
 
-import com.booksms.book.common.data.dto.BookDTO;
 import com.booksms.book.common.data.dto.CategoryDTO;
 import com.booksms.book.common.data.dto.ResponseDTO;
 import com.booksms.book.common.service.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.util.ErrorPageSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController

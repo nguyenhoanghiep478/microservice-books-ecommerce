@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="bacde660-93cc-4362-96c5-9c7c34f803f1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/data/dto/ShortBookDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Book/src/main/resources/db/migration/V3__update_trigger.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/OrderApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/DTO/BookDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/DTO/OrderDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/DTO/OrderItemDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/DTO/Request/UpdateQuantityDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/DTO/ResponseDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/Entity/AbstractEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/Entity/OrderItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/Entity/OrderType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/Entity/Orders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/Entity/Status.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Data/Repository/IOrderRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Service/GenericMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Service/IOrderService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/common/Service/impl/OrderService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/AppConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/CustomBigDecimalDeserializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/Exception/BookNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/Exception/Error.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/Exception/ExceptionDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/Exception/InSufficientQuantityException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/Exception/OrderExistException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/Exception/OrderItemNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/Exception/OrderNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Config/ExceptionHandler/GlobalRestExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/java/com/bookms/order/start/Controller/OrderController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/resources/db/migration/V1__init_db.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/main/resources/db/migration/V2__updateTrigger_db.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Order/src/test/java/com/bookms/order/OrdersApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../config-server/src/main/resources/configurations/order-service.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/data/dto/BookDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/data/dto/Request/BookRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/data/dto/UpdateQuantityDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/data/dto/UpdateQuantityDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/data/entity/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/data/entity/Book.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/data/repository/BookRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/data/repository/BookRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/service/IBookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/service/IBookService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/service/ICategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/service/ICategoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/service/impl/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/service/impl/BookService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/service/impl/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/common/service/impl/CategoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/start/Controller/BookController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/start/Controller/BookController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/start/Controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/java/com/booksms/book/start/Controller/CategoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/resources/db/migration/V1__init_database.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/resources/db/migration/V1__init_database.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Book/src/main/resources/db/migration/V2__Import_data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../Book/src/main/resources/db/migration/V2__Import_data.sql" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2jvSSHBkjZ02eQDGlgWDfcuFlI3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="ContributorApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="contributor" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.bookms.contributor.ContributorApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bacde660-93cc-4362-96c5-9c7c34f803f1" name="Changes" comment="" />
+      <created>1722266055765</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1722266055765</updated>
+      <workItem from="1722266056832" duration="248000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

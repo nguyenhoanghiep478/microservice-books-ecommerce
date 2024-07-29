@@ -1,6 +1,5 @@
 package com.booksms.book.common.service;
 
-import com.booksms.book.common.data.dto.BookDTO;
 import com.booksms.book.common.data.dto.CategoryDTO;
 
 import java.util.List;

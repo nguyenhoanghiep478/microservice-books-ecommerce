@@ -12,18 +12,18 @@ insert into book values (4,'Thám tử lừng danh conan tập 4',50,'update lat
 insert into book values (5,'Thám tử lừng danh conan tập 5',50,'update later',2.3,true,current_timestamp,current_timestamp,1,'Conan thám tử lừng danh',5);
 insert into book values (6,'Thám tử lừng danh conan tập 6',50,'update later',2.3,true,current_timestamp,current_timestamp,1,'Conan thám tử lừng danh',6);
 
-insert into book values (7,'Chúng ta đã ly hôn tập 1',20,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',1);
-insert into book values (8,'Chúng ta đã ly hôn tập 2',20,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',2);
-insert into book values (9,'Chúng ta đã ly hôn tập 3',20,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',3);
-insert into book values (10,'Chúng ta đã ly hôn tập 4',30,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',4);
-insert into book values (11,'Chúng ta đã ly hôn tập 5',40,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',5);
-insert into book values (12,'Chúng ta đã ly hôn tập 6',40,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',6);
+insert into book values (7,'Chúng ta đã ly hôn tập 1',20,'update later',2.3,true,current_timestamp,current_timestamp,2,'Chúng ta đã ly hôn',1);
+insert into book values (8,'Chúng ta đã ly hôn tập 2',20,'update later',2.3,true,current_timestamp,current_timestamp,2,'Chúng ta đã ly hôn',2);
+insert into book values (9,'Chúng ta đã ly hôn tập 3',20,'update later',2.3,true,current_timestamp,current_timestamp,2,'Chúng ta đã ly hôn',3);
+insert into book values (10,'Chúng ta đã ly hôn tập 4',30,'update later',2.3,true,current_timestamp,current_timestamp,2,'Chúng ta đã ly hôn',4);
+insert into book values (11,'Chúng ta đã ly hôn tập 5',40,'update later',2.3,true,current_timestamp,current_timestamp,2,'Chúng ta đã ly hôn',5);
+insert into book values (12,'Chúng ta đã ly hôn tập 6',40,'update later',2.3,true,current_timestamp,current_timestamp,2,'Chúng ta đã ly hôn',6);
 
-insert into book values (13,'Chúng ta đã ly hôn tập 1',20,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',1);
-insert into book values (14,'Chúng ta đã ly hôn tập 2',20,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',2);
-insert into book values (15,'Chúng ta đã ly hôn tập 3',20,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',3);
-insert into book values (16,'Chúng ta đã ly hôn tập 4',30,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',4);
-insert into book values (17,'Chúng ta đã ly hôn tập 5',40,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',5);
-insert into book values (18,'Chúng ta đã ly hôn tập 6',40,'update later',2.3,true,current_timestamp,current_timestamp,1,'Chúng ta đã ly hôn',6);
+insert into book values (13,'Chúng ta đã ly hôn tập 1',20,'update later',2.3,true,current_timestamp,current_timestamp,3,'Chúng ta đã ly hôn',1);
+insert into book values (14,'Chúng ta đã ly hôn tập 2',20,'update later',2.3,true,current_timestamp,current_timestamp,3,'Chúng ta đã ly hôn',2);
+insert into book values (15,'Chúng ta đã ly hôn tập 3',20,'update later',2.3,true,current_timestamp,current_timestamp,3,'Chúng ta đã ly hôn',3);
+insert into book values (16,'Chúng ta đã ly hôn tập 4',30,'update later',2.3,true,current_timestamp,current_timestamp,3,'Chúng ta đã ly hôn',4);
+insert into book values (17,'Chúng ta đã ly hôn tập 5',40,'update later',2.3,true,current_timestamp,current_timestamp,3,'Chúng ta đã ly hôn',5);
+insert into book values (18,'Chúng ta đã ly hôn tập 6',40,'update later',2.3,true,current_timestamp,current_timestamp,3,'Chúng ta đã ly hôn',6);
 
 
