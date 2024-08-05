@@ -1,0 +1,23 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: customer-service
+          uri: lb:http://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/v1/customer/**
+        - id: order-service
+          uri: lb:http://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/order/**
+        - id: book-service
+          uri: lb:http://BOOK-SERVICE
+          predicates:
+            - Path=/api/v1/book/**
+            - Path=/api/v1/category/**
+server:
+  port: 8031
