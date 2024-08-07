@@ -1,8 +1,13 @@
 package com.bookms.order.web.controller;
 
+import com.bookms.order.application.model.OrdersModel;
+import com.bookms.order.application.model.PaymentModel;
+import com.bookms.order.infrastructure.FeignClient.PaymentClient;
 import com.bookms.order.interfaceLayer.DTO.OrderDTO;
 import com.bookms.order.interfaceLayer.DTO.ResponseDTO;
+import com.bookms.order.interfaceLayer.DTO.ResponsePayment;
 import com.bookms.order.interfaceLayer.service.IOrderService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final IOrderService service;
+    private final PaymentClient paymentClient;
+    private final ObjectMapper objectMapper;
+
     @GetMapping("/get-all")
     public ResponseEntity<?> GetAll() {
         //get listDTO
@@ -37,9 +45,30 @@ public class OrderController {
                 .build()
         );
     }
-    @PostMapping("/create")
-    public ResponseEntity<?> CreateOrder(@RequestBody OrderDTO request) {
-        OrderDTO result = service.createOrder(request);
+//    @PostMapping("/create")
+//    public ResponseEntity<?> CreateOrder(@RequestBody OrderDTO request) {
+//        OrderDTO result = service.createOrder(request);
+//        return ResponseEntity.ok(ResponseDTO.builder()
+//                .message(Arrays.asList("getOrderSuccessful"))
+//                .status(200)
+//                .result(result)
+//                .build()
+//        );
+//    }
+
+    @PostMapping("/pay-order")
+    public ResponseEntity<?> PayOrder(@RequestBody OrderDTO request) {
+        PaymentModel paymentModel = service.prePay(request);
+        return paymentClient.create(paymentModel);
+    }
+
+    @PostMapping("/success-payment")
+    public ResponseEntity<?> SuccessPayment(@RequestBody ResponsePayment responsePayment) {
+        OrdersModel orderIsPaidSucceed = service.afterPay(responsePayment.getOrderNumber());
+        orderIsPaidSucceed.setPaymentMethod(responsePayment.getPaymentMethod());
+        orderIsPaidSucceed.setPaymentId(responsePayment.getPaymentId());
+        OrderDTO result = service.createOrder(orderIsPaidSucceed);
+        service.completeOrder(responsePayment.getOrderNumber());
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("getOrderSuccessful"))
                 .status(200)

@@ -1,5 +1,7 @@
 package com.bookms.order.interfaceLayer.service.impl;
 
+import com.bookms.order.application.model.OrdersModel;
+import com.bookms.order.application.model.PaymentModel;
 import com.bookms.order.interfaceLayer.DTO.OrderDTO;
 import com.bookms.order.core.domain.Entity.Orders;
 import com.bookms.order.interfaceLayer.service.ICreateOrderService;
@@ -51,7 +53,7 @@ public class OrderService implements IOrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public OrderDTO createOrder(OrderDTO request) {
+    public OrderDTO createOrder(OrdersModel request) {
         try {
            return OrderMapper.toDTO(createOrderService.createOrder(request));
         } catch (HttpClientErrorException.NotFound e) {
@@ -67,6 +69,19 @@ public class OrderService implements IOrderService {
         return modelMapper.map(findOrderService.findByOrderNumber(orderNumber),OrderDTO.class);
     }
 
+    @Override
+    public PaymentModel prePay(OrderDTO request) {
+        return createOrderService.prePayment(request);
+    }
 
+    @Override
+    public OrdersModel afterPay(Long orderNumber) {
+        return createOrderService.afterPayment(orderNumber);
+    }
+
+    @Override
+    public void completeOrder(Long key) {
+        createOrderService.completeOrder(key);
+    }
 
 }

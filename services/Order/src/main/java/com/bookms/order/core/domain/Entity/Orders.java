@@ -32,7 +32,8 @@ public class Orders extends AbstractEntity{
     private List<OrderItems> orderItems;
     @Column(nullable=false)
     private String paymentMethod;
-
+    @Column(nullable=false)
+    private Integer paymentId;
 
     @PrePersist
     public void prePersist(){

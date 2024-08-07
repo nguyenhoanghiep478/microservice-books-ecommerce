@@ -4,6 +4,7 @@ CREATE TABLE Orders (
                         order_type VARCHAR(255) NOT NULL,
                         status VARCHAR(255) NOT NULL,
                         customer_id INT NOT NULL,
+                        payment_id INT not null,
                         total_price DECIMAL(19, 2) NOT NULL,
                         payment_method VARCHAR(255) NOT NULL,
                         created_date TIMESTAMP,

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @Builder
 public class OrderItemModel {
     private Integer orderId;
+    private Integer bookId;
     private String name;
     private BigDecimal price;
     private Integer totalQuantity;

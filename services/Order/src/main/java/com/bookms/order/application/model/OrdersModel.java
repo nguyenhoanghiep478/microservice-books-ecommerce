@@ -21,4 +21,6 @@ public class OrdersModel {
     private BigDecimal totalPrice;
     private List<OrderItemModel> orderItems;
     private String paymentMethod;
+    private List<BookModel> bookModels;
+    private Integer paymentId;
 }
