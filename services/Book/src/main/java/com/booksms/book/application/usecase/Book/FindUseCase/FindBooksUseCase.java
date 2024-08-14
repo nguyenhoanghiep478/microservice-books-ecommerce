@@ -38,6 +38,9 @@ public class FindBooksUseCase implements BaseUseCase<List<Book>, BooksSearchCrit
             if(bookSearchCriteria.getIsInStock() != null){
                isInStock = bookSearchCriteria.getIsInStock();
             }
+            if(bookSearchCriteria.getPageable() != null && result == null){
+                result = bookRepository.findAll(bookSearchCriteria.getPageable()).getContent();
+            }
         }
             if(result == null){
                result = bookRepository.findAll();
@@ -48,6 +51,7 @@ public class FindBooksUseCase implements BaseUseCase<List<Book>, BooksSearchCrit
             if(isInStock){
                 return result.stream().filter(Book::getIsInStock).toList();
             }
+
             return result;
 
     }

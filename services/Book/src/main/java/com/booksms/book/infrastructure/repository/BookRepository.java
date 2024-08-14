@@ -4,6 +4,8 @@ import com.booksms.book.core.domain.entity.Book;
 import com.booksms.book.core.domain.repository.IBookRepository;
 import com.booksms.book.infrastructure.JpaRepository.BookJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -85,6 +87,11 @@ public class BookRepository implements IBookRepository {
     @Override
     public List<Book> findAllLikeNameAndCategoryId(String name, Integer categoryId) {
         return bookJpaRepository.findAllByNameContainingAndCategoryId(name,categoryId);
+    }
+
+    @Override
+    public Page<Book> findAll(Pageable pageable) {
+        return bookJpaRepository.findAll(pageable);
     }
 
 }

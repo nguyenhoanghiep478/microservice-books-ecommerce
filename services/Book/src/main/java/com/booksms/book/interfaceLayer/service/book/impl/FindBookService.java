@@ -7,6 +7,7 @@ import com.booksms.book.application.usecase.Book.FindUseCase.FindBooksUseCase;
 import com.booksms.book.core.domain.entity.Book;
 import com.booksms.book.interfaceLayer.service.book.IFindBookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,6 +65,13 @@ public class FindBookService implements IFindBookService {
       return findBooksUseCase.execute(BooksSearchCriteria.builder()
               .isInStock(true)
               .build());
+    }
+
+    @Override
+    public List<Book> findAll(Pageable pageable) {
+        return findBooksUseCase.execute(BooksSearchCriteria.builder()
+                        .pageable(pageable)
+                .build());
     }
 
     @Override

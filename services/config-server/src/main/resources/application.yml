@@ -8,5 +8,8 @@ spring:
       server:
         native:
           search-locations: classpath:/configurations
+
 server:
   port: 8888
+GMAIL_USERNAME: ${GMAIL_USERNAME:default-username}
+GMAIL_PASSWORD: ${GMAIL_PASSWORD:default-password}

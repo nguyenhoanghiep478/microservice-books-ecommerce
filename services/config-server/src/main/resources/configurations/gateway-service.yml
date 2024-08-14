@@ -1,6 +1,20 @@
 spring:
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3000"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
       discovery:
         locator:
           enabled: true
@@ -10,14 +24,28 @@ spring:
           uri: lb:http://CUSTOMER-SERVICE
           predicates:
             - Path=/api/v1/customer/**
+          filters:
+            - AuthenticationFilter
         - id: order-service
           uri: lb:http://ORDER-SERVICE
           predicates:
             - Path=/api/v1/order/**
+          filters:
+            - AuthenticationFilter
         - id: book-service
           uri: lb:http://BOOK-SERVICE
           predicates:
             - Path=/api/v1/book/**
-            - Path=/api/v1/category/**
+#            - Path=/api/v1/category/**
+          filters:
+            - AuthenticationFilter
+        - id: authentication-service
+          uri: lb:http://AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - AuthenticationFilter
+  main:
+    allow-circular-references: true
 server:
   port: 8031

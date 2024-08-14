@@ -24,7 +24,8 @@ create table book(
 
 );
 
-;CREATE OR REPLACE FUNCTION check_create_date()
+;
+CREATE OR REPLACE FUNCTION check_create_date()
     RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.createDate <> OLD.createDate THEN

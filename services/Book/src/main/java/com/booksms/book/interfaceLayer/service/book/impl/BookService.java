@@ -1,6 +1,11 @@
 package com.booksms.book.interfaceLayer.service.book.impl;
 
+import com.booksms.book.core.domain.exception.InSufficientQuantityException;
 import com.booksms.book.infrastructure.JpaRepository.BookJpaRepository;
+import com.booksms.book.interfaceLayer.DTO.OrderItemDTO;
+import com.booksms.book.interfaceLayer.DTO.OrdersDTO;
+import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
+import com.booksms.book.interfaceLayer.DTO.ResponseOrderCreated;
 import com.booksms.book.web.mapper.GenericMapper;
 import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
 import com.booksms.book.interfaceLayer.DTO.Request.ShortBookDTO;
@@ -14,7 +19,14 @@ import com.booksms.book.interfaceLayer.service.book.IUpdateBookService;
 import com.sun.jdi.InternalException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.internals.RecordHeader;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.micrometer.KafkaRecordSenderContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +46,7 @@ public class BookService implements IBookService{
     private final IUpdateBookService updateBookService;
     private final BookJpaRepository bookJpaRepository;
     private final ModelMapper modelMapper;
+    private final KafkaTemplate<String, ResponseOrderCreated> kafkaTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -69,6 +82,31 @@ public class BookService implements IBookService{
     public BookRequestDTO updateQuantityById(int id, UpdateQuantityDTO request) {
         Book book = updateBookService.updateQuantityById(id, request);
         return bookMapper.toResponse(book, BookRequestDTO.class);
+    }
+
+    @KafkaListener(id = "consumer-created-order",topics = "order-created")
+    @Transactional(rollbackFor = Exception.class)
+    public void updateQuantity(OrdersDTO ordersDTO){
+        try{
+            for (OrderItemDTO item : ordersDTO.getOrderItems()) {
+                updateQuantityById(item.getBookId(), UpdateQuantityDTO.builder()
+                        .quantity(item.getTotalQuantity())
+                        .type(ordersDTO.getOrderType())
+                        .build());
+            }
+
+            kafkaTemplate.send("order-created-response", ResponseOrderCreated.builder()
+                            .serviceName("BookService")
+                            .message("successful")
+                    .build());
+        }catch (InSufficientQuantityException e){
+            kafkaTemplate.send("order-created-response", ResponseOrderCreated.builder()
+                    .serviceName("BookService")
+                    .message(e.getMessage())
+                    .build());
+        }
+
+
     }
 
     @Override
@@ -111,6 +149,11 @@ public class BookService implements IBookService{
     public List<BookRequestDTO> findAll() {
         List<Book> books = findBookService.findAll();
         return bookMapper.toListResponse(books, BookRequestDTO.class);
+    }
+
+    @Override
+    public List<BookRequestDTO> findAll(Pageable pageable) {
+        return bookMapper.toListResponse(findBookService.findAll(pageable),BookRequestDTO.class);
     }
 
     @Override

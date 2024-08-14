@@ -3,6 +3,7 @@ package com.booksms.book.interfaceLayer.service.book;
 import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
 import com.booksms.book.interfaceLayer.DTO.Request.ShortBookDTO;
 import com.booksms.book.interfaceLayer.DTO.Request.UpdateQuantityDTO;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,6 @@ public interface IBookService {
     List<ShortBookDTO> findAllInStock();
 
     List<BookRequestDTO> findAll();
-
+    List<BookRequestDTO> findAll(Pageable pageable);
     List<ShortBookDTO> findAllByIds(Set<Integer> ids);
 }

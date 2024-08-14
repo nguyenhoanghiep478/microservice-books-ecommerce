@@ -1,6 +1,8 @@
 package com.booksms.book.core.domain.repository;
 
 import com.booksms.book.core.domain.entity.Book;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -31,4 +33,6 @@ public interface IBookRepository {
     Optional<Book> findOneByName(String name);
 
     List<Book> findAllLikeNameAndCategoryId(String name, Integer categoryId);
+
+    Page<Book> findAll(Pageable pageable);
 }

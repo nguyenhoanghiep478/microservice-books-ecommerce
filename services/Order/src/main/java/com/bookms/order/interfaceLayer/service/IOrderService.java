@@ -20,4 +20,6 @@ public interface IOrderService {
     OrdersModel afterPay(Long orderNumber);
 
     void completeOrder(Long key);
+
+    void handlePaymentResponse(OrderDTO response);
 }

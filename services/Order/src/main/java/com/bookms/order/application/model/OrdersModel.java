@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class OrdersModel {
+    private String recipient;
     private Long orderNumber;
     private OrderType orderType;
     private Status status;

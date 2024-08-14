@@ -13,7 +13,9 @@ import com.bookms.order.core.domain.Exception.OrderExistException;
 import com.bookms.order.core.domain.Exception.OrderNotFoundException;
 import com.bookms.order.web.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService implements IOrderService {
     private final ICreateOrderService createOrderService;
     private final IFindOrderService findOrderService;
@@ -84,4 +87,8 @@ public class OrderService implements IOrderService {
         createOrderService.completeOrder(key);
     }
 
+    @Override
+    public void handlePaymentResponse(OrderDTO orderDTO) {
+        log.info(String.valueOf(orderDTO.getCustomerId()));
+    }
 }

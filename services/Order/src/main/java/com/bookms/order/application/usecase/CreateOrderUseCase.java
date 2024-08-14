@@ -41,17 +41,17 @@ public class CreateOrderUseCase implements BaseUseCase<OrdersModel,OrdersModel>{
         }
 
         //updateQuantity
-        for(int i = 0 ; i < orders.getOrderItems().size() ; i++){
-            int updateQuantity = getUpdateQuantityByOrderType(orders.getOrderType(),orderModel.getBookModels().get(i).getAvailableQuantity(),orders.getOrderItems().get(i).getTotalQuantity());
-            BookModel bookModel = bookServiceGateway.updateQuantity(UpdateQuantityModel.builder()
-                    .id(orders.getOrderItems().get(i).getBookId())
-                    .type(orders.getOrderType())
-                    .quantity(updateQuantity)
-                    .build());
-            if(bookModel == null){
-                throw new UpdateBookQuantityFailedException("update book quantity failed");
-            }
-        }
+//        for(int i = 0 ; i < orders.getOrderItems().size() ; i++){
+//            int updateQuantity = getUpdateQuantityByOrderType(orders.getOrderType(),orderModel.getBookModels().get(i).getAvailableQuantity(),orders.getOrderItems().get(i).getTotalQuantity());
+//            BookModel bookModel = bookServiceGateway.updateQuantity(UpdateQuantityModel.builder()
+//                    .id(orders.getOrderItems().get(i).getBookId())
+//                    .type(orders.getOrderType())
+//                    .quantity(updateQuantity)
+//                    .build());
+//            if(bookModel == null){
+//                throw new UpdateBookQuantityFailedException("update book quantity failed");
+//            }
+//        }
         return orderModel;
     }
 

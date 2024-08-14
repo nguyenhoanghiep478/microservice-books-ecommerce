@@ -2,6 +2,7 @@ package com.bookms.order.web.controller;
 
 import com.bookms.order.application.model.OrdersModel;
 import com.bookms.order.application.model.PaymentModel;
+import com.bookms.order.core.domain.Entity.OrderType;
 import com.bookms.order.infrastructure.FeignClient.PaymentClient;
 import com.bookms.order.interfaceLayer.DTO.OrderDTO;
 import com.bookms.order.interfaceLayer.DTO.ResponseDTO;
@@ -10,6 +11,9 @@ import com.bookms.order.interfaceLayer.service.IOrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -22,6 +26,7 @@ public class OrderController {
     private final IOrderService service;
     private final PaymentClient paymentClient;
     private final ObjectMapper objectMapper;
+    private final KafkaTemplate<String, OrdersModel> kafkaTemplate;
 
     @GetMapping("/get-all")
     public ResponseEntity<?> GetAll() {
@@ -56,11 +61,14 @@ public class OrderController {
 //        );
 //    }
 
+
+
     @PostMapping("/pay-order")
     public ResponseEntity<?> PayOrder(@RequestBody OrderDTO request) {
         PaymentModel paymentModel = service.prePay(request);
         return paymentClient.create(paymentModel);
     }
+
 
     @PostMapping("/success-payment")
     public ResponseEntity<?> SuccessPayment(@RequestBody ResponsePayment responsePayment) {

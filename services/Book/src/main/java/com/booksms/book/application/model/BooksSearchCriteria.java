@@ -2,6 +2,7 @@ package com.booksms.book.application.model;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
 
@@ -15,4 +16,5 @@ public class BooksSearchCriteria {
    private Integer distributorId;
    private Timestamp createdDate;
    private Timestamp updatedDate;
+   private Pageable pageable;
 }
