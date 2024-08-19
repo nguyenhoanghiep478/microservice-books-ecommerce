@@ -14,6 +14,7 @@ import static com.booksms.authentication.core.exception.Error.*;
 @ControllerAdvice
 public class GlobalRestException {
     private final String contentType= "application/json";
+
     @ExceptionHandler(EmailExistedException.class)
     public ResponseEntity<ExceptionDTO> bookNotFoundException(EmailExistedException e) {
         return ResponseEntity

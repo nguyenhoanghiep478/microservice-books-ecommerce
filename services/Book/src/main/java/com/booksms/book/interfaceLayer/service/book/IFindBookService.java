@@ -17,5 +17,5 @@ public interface IFindBookService {
     boolean existById(int id);
     boolean existByName(String name);
 
-    Book findOneLikeNameAndCategoryId(String name, int categoryId);
+    List<Book> findOneLikeNameAndCategoryId(String name, int categoryId);
 }

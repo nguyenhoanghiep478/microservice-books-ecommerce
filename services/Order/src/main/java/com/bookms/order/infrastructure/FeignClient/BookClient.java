@@ -11,7 +11,7 @@ import java.util.Set;
 
 @FeignClient(name = "book-services",url = "http://localhost:5555/api/v1/book")
 public interface BookClient {
-    @PostMapping("/get-all-by-ids")
+    @PostMapping("/anonymous/get-all-by-ids")
     ResponseEntity<ResponseDTO> getBooksByIds(@RequestBody Set<Integer> ids);
 
     @PostMapping("/update-quantity")

@@ -1,8 +1,10 @@
 package com.booksms.marketing.web.controller;
 
+import com.booksms.marketing.interfaceLayer.dto.VerifyUserDTO;
 import com.booksms.marketing.interfaceLayer.dto.request.EmailRequest;
-import com.booksms.marketing.interfaceLayer.service.EmailService;
+import com.booksms.marketing.interfaceLayer.service.IEmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/marketing")
 @RequiredArgsConstructor
 public class MarketingController {
-    private final EmailService emailService;
+    private final IEmailService emailService;
 
 
     @PostMapping("/send-mail")
@@ -23,5 +25,12 @@ public class MarketingController {
                         .message(emailRequest.getMessage())
                 .build());
         return "send success";
+    }
+
+    @PostMapping("/verify-token")
+    public ResponseEntity<?> validateToken(@RequestBody VerifyUserDTO verifyUserDTO){
+        String message=  emailService.verifyToken(verifyUserDTO);
+
+        return ResponseEntity.ok(message);
     }
 }

@@ -6,7 +6,9 @@ import com.booksms.authentication.application.model.UserModel;
 import com.booksms.authentication.application.usecase.FindUserUseCase;
 import com.booksms.authentication.application.usecase.GetPermissionUseCase;
 import com.booksms.authentication.application.usecase.RegisterUseCase;
+import com.booksms.authentication.application.usecase.UpdateUserUseCase;
 import com.booksms.authentication.core.entity.UserCredential;
+import com.booksms.authentication.core.exception.EmailExistedException;
 import com.booksms.authentication.core.exception.RegisterFailException;
 import com.booksms.authentication.interfaceLayer.DTO.Request.AuthRequest;
 import com.booksms.authentication.interfaceLayer.DTO.Request.NewUserRegister;
@@ -14,9 +16,11 @@ import com.booksms.authentication.interfaceLayer.DTO.Request.UserDTO;
 import com.booksms.authentication.interfaceLayer.DTO.Response.AuthResponse;
 import com.booksms.authentication.interfaceLayer.service.IAuthService;
 import com.booksms.authentication.interfaceLayer.service.IJwtService;
+import jakarta.ws.rs.InternalServerErrorException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,6 +43,8 @@ public class AuthService  implements IAuthService {
     private final AuthenticationManager authenticationManager;
     private final FindUserUseCase findUserUseCase;
     private final KafkaTemplate<String, NewUserRegister> kafkaTemplate;
+    private final UpdateUserUseCase updateUserUseCase;
+
     @Override
     public UserDTO register(UserDTO credential) {
         try{
@@ -47,13 +53,20 @@ public class AuthService  implements IAuthService {
            kafkaTemplate.send("UserRegister", NewUserRegister.builder()
                            .firstName(user.getFirstName())
                            .lastName(user.getLastName())
+                           .isVerified(false)
+                           .isFirstVisit(true)
                            .recipient(user.getEmail())
                    .build());
            credential.setId(user.getId());
            return modelMapper.map(user, UserDTO.class);
+        }catch (EmailExistedException e){
+            log.error(e.getMessage());
+            throw new EmailExistedException(e.getMessage());
+        }catch (RegisterFailException e){
+            throw new RegisterFailException(e.getMessage());
         }catch (Exception e){
             log.error(e.getMessage());
-            throw new RegisterFailException(e.getMessage());
+            throw new InternalServerErrorException("please contact with administrator");
         }
     }
 
@@ -108,5 +121,10 @@ public class AuthService  implements IAuthService {
         return permissionModels.stream().map(PermissionModel::getGroupCode).toArray(String[]::new);
     }
 
-
+    @KafkaListener(id="consumer-user-register-response",topics = "UserRegisterResponse")
+    private void verifyUserCredential(NewUserRegister userRegister) {
+        UserModel user = modelMapper.map(userRegister, UserModel.class);
+        user.setEmail(userRegister.getRecipient());
+        updateUserUseCase.execute(user);
+    }
 }

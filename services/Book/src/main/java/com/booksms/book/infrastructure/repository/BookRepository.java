@@ -1,14 +1,22 @@
 package com.booksms.book.infrastructure.repository;
 
+import com.booksms.book.application.model.BooksSearchCriteria;
 import com.booksms.book.core.domain.entity.Book;
 import com.booksms.book.core.domain.repository.IBookRepository;
 import com.booksms.book.infrastructure.JpaRepository.BookJpaRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +24,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookRepository implements IBookRepository {
     private final BookJpaRepository bookJpaRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
     public Optional<Book> findByName(String name) {
         return bookJpaRepository.findByName(name);
@@ -92,6 +103,31 @@ public class BookRepository implements IBookRepository {
     @Override
     public Page<Book> findAll(Pageable pageable) {
         return bookJpaRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Book> search(List<BooksSearchCriteria> bookSearchCriteria) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> query = builder.createQuery(Book.class);
+        Root<Book> root = query.from(Book.class);
+        List<Predicate> predicates = new ArrayList<>();
+        for(BooksSearchCriteria criteria : bookSearchCriteria) {
+            switch (criteria.getOperation()){
+                case ":":
+                    predicates.add(builder.equal(root.get(criteria.getKey()),(Comparable) criteria.getValue()));
+                    break;
+                case ">":
+                    predicates.add(builder.greaterThan(root.get(criteria.getKey()),(Comparable) criteria.getValue()));
+                    break;
+                case "<":
+                    predicates.add(builder.lessThan(root.get(criteria.getKey()), (Comparable) criteria.getValue()));
+                case "LIKE":
+                    predicates.add(builder.like(root.get(criteria.getKey()), "%" + criteria.getValue() + "%"));
+                    break;
+            }
+        }
+        query.where(predicates.toArray(new Predicate[0]));
+        return entityManager.createQuery(query).getResultList();
     }
 
 }

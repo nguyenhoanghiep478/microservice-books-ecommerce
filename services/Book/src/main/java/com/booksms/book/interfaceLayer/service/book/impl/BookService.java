@@ -1,39 +1,39 @@
 package com.booksms.book.interfaceLayer.service.book.impl;
 
+import com.booksms.book.core.domain.entity.Book;
+import com.booksms.book.core.domain.exception.BookNotFoundException;
 import com.booksms.book.core.domain.exception.InSufficientQuantityException;
 import com.booksms.book.infrastructure.JpaRepository.BookJpaRepository;
 import com.booksms.book.interfaceLayer.DTO.OrderItemDTO;
 import com.booksms.book.interfaceLayer.DTO.OrdersDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
-import com.booksms.book.interfaceLayer.DTO.ResponseOrderCreated;
-import com.booksms.book.web.mapper.GenericMapper;
 import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
 import com.booksms.book.interfaceLayer.DTO.Request.ShortBookDTO;
 import com.booksms.book.interfaceLayer.DTO.Request.UpdateQuantityDTO;
-import com.booksms.book.core.domain.entity.Book;
-import com.booksms.book.core.domain.exception.BookNotFoundException;
+import com.booksms.book.interfaceLayer.DTO.Response.BookResponseDTO;
+import com.booksms.book.interfaceLayer.DTO.ResponseOrderCreated;
 import com.booksms.book.interfaceLayer.service.book.IBookService;
 import com.booksms.book.interfaceLayer.service.book.ICreateBookService;
 import com.booksms.book.interfaceLayer.service.book.IFindBookService;
 import com.booksms.book.interfaceLayer.service.book.IUpdateBookService;
+import com.booksms.book.web.mapper.GenericMapper;
 import com.sun.jdi.InternalException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.header.internals.RecordHeader;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.micrometer.KafkaRecordSenderContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+
+import static com.booksms.book.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class BookService implements IBookService{
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BookRequestDTO insert(BookRequestDTO request) {
+    public BookRequestDTO insert(BookRequestDTO request) throws IOException {
         Book book = createBookService.insert(request);
         return bookMapper.toResponse(book, BookRequestDTO.class);
     }
@@ -146,9 +146,24 @@ public class BookService implements IBookService{
     }
 
     @Override
-    public List<BookRequestDTO> findAll() {
+    public List<BookResponseDTO> findAll() throws IOException {
         List<Book> books = findBookService.findAll();
-        return bookMapper.toListResponse(books, BookRequestDTO.class);
+        Path filePath;
+        List<BookResponseDTO> bookRequestDTOList = new ArrayList<>();
+        for (Book book : books) {
+            filePath = Paths.get(IMAGE_STORAGE_PATH).resolve(book.getImage()).normalize();
+            File file = filePath.toFile();
+            BookResponseDTO bookRequestDTO = modelMapper.map(book, BookResponseDTO.class);
+            if (file.exists()) {
+                byte[] fileContent = Files.readAllBytes(filePath);
+
+                String base64Image = Base64.getEncoder().encodeToString(fileContent);
+                bookRequestDTO.setImage(base64Image);
+            }
+            bookRequestDTOList.add(bookRequestDTO);
+        }
+
+        return bookRequestDTOList;
     }
 
     @Override

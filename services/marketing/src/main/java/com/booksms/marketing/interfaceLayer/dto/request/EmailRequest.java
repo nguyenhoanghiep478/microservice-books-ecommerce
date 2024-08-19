@@ -25,5 +25,6 @@ public class EmailRequest {
     private String paymentMethod;
     private List<BookModel> bookModels;
     private Integer paymentId;
+    private boolean isVerified;
 
 }

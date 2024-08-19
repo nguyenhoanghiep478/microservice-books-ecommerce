@@ -39,6 +39,12 @@ spring:
 #            - Path=/api/v1/category/**
           filters:
             - AuthenticationFilter
+        - id: category-service
+          uri: lb:http://BOOK-SERVICE
+          predicates:
+             - Path=/api/v1/category/**
+          filters:
+              - AuthenticationFilter
         - id: authentication-service
           uri: lb:http://AUTHENTICATION-SERVICE
           predicates:

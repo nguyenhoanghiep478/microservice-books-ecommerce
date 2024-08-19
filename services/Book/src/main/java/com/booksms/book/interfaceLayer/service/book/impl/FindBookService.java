@@ -1,8 +1,6 @@
 package com.booksms.book.interfaceLayer.service.book.impl;
 
-import com.booksms.book.application.model.BookSearchCriteria;
 import com.booksms.book.application.model.BooksSearchCriteria;
-import com.booksms.book.application.usecase.Book.FindUseCase.FindBookUseCase;
 import com.booksms.book.application.usecase.Book.FindUseCase.FindBooksUseCase;
 import com.booksms.book.core.domain.entity.Book;
 import com.booksms.book.interfaceLayer.service.book.IFindBookService;
@@ -15,7 +13,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FindBookService implements IFindBookService {
-    private final FindBookUseCase findBookUseCase;
     private final FindBooksUseCase findBooksUseCase;
 
     @Override
@@ -25,53 +22,82 @@ public class FindBookService implements IFindBookService {
 
     @Override
     public Book findById(int id) {
-        return findBookUseCase.execute(BookSearchCriteria.builder()
-                .isInStock(true)
-                .bookId(id)
-                .build()
-        );
+        BooksSearchCriteria findById = BooksSearchCriteria.builder()
+                .key("id")
+                .operation(":")
+                .value(id)
+                .build();
+        BooksSearchCriteria withIsInStock = BooksSearchCriteria.builder()
+                .key("isInStock")
+                .operation(":")
+                .value(true)
+                .build();
+        return findBooksUseCase.execute(List.of(findById,withIsInStock)).get(0);
     }
 
     @Override
     public Book findByName(String name) {
-        return findBookUseCase.execute(BookSearchCriteria.builder()
-                .isInStock(true)
-                .name(name)
-                .build()
-        );
+        BooksSearchCriteria findByName = BooksSearchCriteria.builder()
+                .key("name")
+                .operation(":")
+                .value(name)
+                .build();
+        BooksSearchCriteria withIsInStock = BooksSearchCriteria.builder()
+                .key("isInStock")
+                .operation(":")
+                .value(true)
+                .build();
+        return findBooksUseCase.execute(List.of(findByName,withIsInStock)).get(0);
     }
 
     @Override
     public List<Book> findByCategoryId(int categoryId) {
-        return findBooksUseCase.execute(BooksSearchCriteria.builder()
-                .isInStock(true)
-                .categoryId(categoryId)
-                .build()
-        );
+        BooksSearchCriteria findByCategoryId = BooksSearchCriteria.builder()
+                .key("categoryId")
+                .operation(":")
+                .value(categoryId)
+                .build();
+        BooksSearchCriteria withIsInStock = BooksSearchCriteria.builder()
+                .key("isInStock")
+                .operation(":")
+                .value(true)
+                .build();
+        return findBooksUseCase.execute(List.of(findByCategoryId,withIsInStock));
     }
 
     @Override
     public List<Book> findByCategoryIdAndName(int categoryId, String name) {
-        return findBooksUseCase.execute(BooksSearchCriteria.builder()
-                .isInStock(true)
-                .categoryId(categoryId)
-                .name(name)
-                .build()
-        );
+        BooksSearchCriteria findByName = BooksSearchCriteria.builder()
+                .key("name")
+                .operation(":")
+                .value(name)
+                .build();
+        BooksSearchCriteria findByCategoryId = BooksSearchCriteria.builder()
+                .key("categoryId")
+                .operation(":")
+                .value(categoryId)
+                .build();
+        BooksSearchCriteria withIsInStock = BooksSearchCriteria.builder()
+                .key("isInStock")
+                .operation(":")
+                .value(true)
+                .build();
+        return findBooksUseCase.execute(List.of(findByName,findByCategoryId,withIsInStock));
     }
 
     @Override
     public List<Book> findAllInStock() {
-      return findBooksUseCase.execute(BooksSearchCriteria.builder()
-              .isInStock(true)
-              .build());
+        BooksSearchCriteria withIsInStock = BooksSearchCriteria.builder()
+                .key("isInStock")
+                .operation(":")
+                .value(true)
+                .build();
+        return findBooksUseCase.execute(List.of(withIsInStock));
     }
 
     @Override
     public List<Book> findAll(Pageable pageable) {
-        return findBooksUseCase.execute(BooksSearchCriteria.builder()
-                        .pageable(pageable)
-                .build());
+        return null;
     }
 
     @Override
@@ -85,11 +111,17 @@ public class FindBookService implements IFindBookService {
     }
 
     @Override
-    public Book findOneLikeNameAndCategoryId(String name, int categoryId) {
-
-        return findBookUseCase.execute(BookSearchCriteria.builder()
-                        .name(name)
-                        .categoryId(categoryId)
-                .build());
+    public List<Book> findOneLikeNameAndCategoryId(String name, int categoryId) {
+        BooksSearchCriteria findByName = BooksSearchCriteria.builder()
+                .key("name")
+                .operation("LIKE")
+                .value(String.valueOf(name))
+                .build();
+        BooksSearchCriteria findByCategoryId = BooksSearchCriteria.builder()
+                .key("categoryId")
+                .operation(":")
+                .value(String.valueOf(categoryId))
+                .build();
+        return findBooksUseCase.execute(List.of(findByName,findByCategoryId));
     }
 }

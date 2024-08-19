@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum Error {
     NO_CODE(0,"No code", HttpStatus.INTERNAL_SERVER_ERROR),
-    EMAIL_EXISTED(402,"Category existed",HttpStatus.BAD_REQUEST),
+    EMAIL_EXISTED(402,"Email existed",HttpStatus.BAD_REQUEST),
     CREAT_FAILURE_EXCEPTION(500,"Create failure",HttpStatus.INTERNAL_SERVER_ERROR),
     UPDATE_FAILURE_EXCEPTION(501,"Update failure",HttpStatus.INTERNAL_SERVER_ERROR),
     MISSING_ARGUMENT_EXCEPTION(502,"Missing argument",HttpStatus.BAD_REQUEST),

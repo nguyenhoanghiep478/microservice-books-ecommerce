@@ -1,7 +1,7 @@
 package com.booksms.authentication.core.exception;
 
 public class UpdateFailureException extends RuntimeException {
-    UpdateFailureException(String message) {
+    public UpdateFailureException(String message) {
         super(message);
     }
 }

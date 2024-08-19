@@ -12,6 +12,12 @@ public class KafkaConfig {
     public NewTopic topic1() {
         return new NewTopic("UserRegister", 2, (short) 1);
     }
+
+    @Bean
+    public NewTopic response() {
+        return new NewTopic("UserRegisterResponse", 2, (short) 1);
+    }
+
     @Bean
     public JsonMessageConverter jsonMessageConverter() {
         return new JsonMessageConverter();

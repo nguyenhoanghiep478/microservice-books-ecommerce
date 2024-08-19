@@ -8,13 +8,8 @@ import java.sql.Timestamp;
 
 @Data
 @Builder
-public class BooksSearchCriteria {
-   private String name;
-   private Boolean isInStock;
-   private Integer authorId;
-   private Integer categoryId;
-   private Integer distributorId;
-   private Timestamp createdDate;
-   private Timestamp updatedDate;
-   private Pageable pageable;
+public class BooksSearchCriteria{
+   private String key;
+   private String operation;
+   private Object value;
 }

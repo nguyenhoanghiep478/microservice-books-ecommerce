@@ -2,6 +2,7 @@ package com.booksms.book.web.anonymous;
 
 import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
 import com.booksms.book.interfaceLayer.DTO.Request.ShortBookDTO;
+import com.booksms.book.interfaceLayer.DTO.Response.BookResponseDTO;
 import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
 import com.booksms.book.interfaceLayer.service.book.IBookService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -18,9 +20,9 @@ import java.util.Set;
 public class BookAnonymousController {
     private final IBookService service;
     @GetMapping("/get-all")
-    public ResponseEntity<?> GetAllBook() {
+    public ResponseEntity<?> GetAllBook() throws IOException {
         //get listDTO
-        List<BookRequestDTO> results = service.findAll();
+        List<BookResponseDTO> results = service.findAll();
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(List.of("getAllBookSuccessful"))
                 .status(201)

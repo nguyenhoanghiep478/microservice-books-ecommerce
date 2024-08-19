@@ -15,5 +15,6 @@ public class UserModel {
     private String phone;
     private String address;
     private String password;
-
+    private Boolean isVerified;
+    private Boolean isFirstVisit;
 }

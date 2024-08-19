@@ -21,6 +21,8 @@ public class UserCredential extends AbstractEntity{
     private String phone;
     private String address;
     private String password;
+    private boolean isVerified;
+    private boolean isFirstVisit;
     @ManyToMany
     @JoinTable(
             name = "user_role",

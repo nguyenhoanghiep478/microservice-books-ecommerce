@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CategoryDTO {
+    private Integer id;
     @NotNull(message = "name is required for category")
     private String name;
     @NotNull(message = "description is required for category")

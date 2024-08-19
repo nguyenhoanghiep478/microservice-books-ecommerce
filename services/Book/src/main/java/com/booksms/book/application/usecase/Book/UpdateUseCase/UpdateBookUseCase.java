@@ -2,12 +2,10 @@ package com.booksms.book.application.usecase.Book.UpdateUseCase;
 
 import com.booksms.book.application.model.CategorySearchCriteria;
 import com.booksms.book.application.usecase.BaseUseCase;
-import com.booksms.book.application.usecase.Book.FindUseCase.FindBookUseCase;
 import com.booksms.book.application.usecase.Category.FindCategoryUseCase;
 import com.booksms.book.core.domain.entity.Book;
 import com.booksms.book.core.domain.entity.Category;
 import com.booksms.book.core.domain.exception.BookNotFoundException;
-import com.booksms.book.core.domain.exception.CategoryNotFoundException;
 import com.booksms.book.core.domain.exception.UpdateFailureException;
 import com.booksms.book.core.domain.repository.IBookRepository;
 import jakarta.validation.constraints.NotNull;

@@ -3,6 +3,7 @@ package com.booksms.book.interfaceLayer.DTO.Request;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -27,7 +28,7 @@ public class BookRequestDTO {
     @NotNull(message = "available quantity is required")
     private Integer availableQuantity;
     @NotNull(message = "image for book is required")
-    private String image;
+    private MultipartFile image;
     @NotNull(message = "chapter is required to audit version")
     private Integer chapter;
     private Boolean isInStock;

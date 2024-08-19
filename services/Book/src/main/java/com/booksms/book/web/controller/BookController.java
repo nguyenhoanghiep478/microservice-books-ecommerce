@@ -1,20 +1,19 @@
 package com.booksms.book.web.controller;
 
 import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.ShortBookDTO;
 import com.booksms.book.interfaceLayer.DTO.Request.UpdateQuantityDTO;
+import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
 import com.booksms.book.interfaceLayer.service.book.IBookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/book")
@@ -70,10 +69,30 @@ public class BookController {
         );
     }
     @PostMapping("/create")
-    public ResponseEntity<?> CreateBook(@RequestBody @Valid BookRequestDTO request){
+    public ResponseEntity<?> CreateBook(
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("title") String title,
+            @RequestParam("name") String name,
+            @RequestParam("price") Double price,
+            @RequestParam("quantity") Integer quantity,
+            @RequestParam("selectedCategory") String selectedCategory) throws IOException {
         //create new book
+        String[] splitName= name.split(" ");
+        Integer chapter = Integer.valueOf(splitName[splitName.length-1]);
+
+        BookRequestDTO request = BookRequestDTO.builder()
+                .image(image)
+                .title(title)
+                .name(name)
+                .price(BigDecimal.valueOf(price))
+                .availableQuantity(quantity)
+                .categoryId(Integer.valueOf(selectedCategory))
+                .chapter(chapter)
+                .distributorId(1)
+                .isInStock(true)
+                .build();
+
         BookRequestDTO result = service.insert(request);
-        System.out.println(result.getIsInStock());
         return ResponseEntity.ok(ResponseDTO.builder()
                         .message(Arrays.asList("createBookSuccessful"))
                         .status(200)
