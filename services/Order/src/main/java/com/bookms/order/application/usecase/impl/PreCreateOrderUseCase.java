@@ -1,16 +1,15 @@
-package com.bookms.order.application.usecase;
+package com.bookms.order.application.usecase.impl;
 
 import com.bookms.order.application.BaseUseCase;
 import com.bookms.order.application.model.BookModel;
 import com.bookms.order.application.model.OrderItemModel;
 import com.bookms.order.application.model.OrdersModel;
-import com.bookms.order.application.model.UpdateQuantityModel;
 import com.bookms.order.application.servicegateway.IBookServiceGateway;
-import com.bookms.order.core.domain.Entity.OrderItems;
 import com.bookms.order.core.domain.Entity.Orders;
 import com.bookms.order.core.domain.Exception.*;
 import com.bookms.order.core.domain.Repository.IOrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class PreCreateOrderUseCase implements BaseUseCase<OrdersModel, OrdersModel>{
     private final IOrderRepository orderRepository;
     private final IBookServiceGateway bookServiceGateway;
@@ -42,6 +42,7 @@ public class PreCreateOrderUseCase implements BaseUseCase<OrdersModel, OrdersMod
         for(int i = 0 ; i < bookModels.size() ; i++){
             orders.getOrderItems().get(i).setName(bookModels.get(i).getName());
         }
+
         orders.setBookModels(bookModels);
         return orders;
     }
@@ -52,12 +53,15 @@ public class PreCreateOrderUseCase implements BaseUseCase<OrdersModel, OrdersMod
         BigDecimal totalPrice = BigDecimal.ZERO;
         for(int i = 0 ; i<order.getOrderItems().size() ; i++){
             BigDecimal price = bookModels.get(i).getPrice();
-            if(!Objects.equals(order.getOrderItems().get(i).getPrice(), bookModels.get(i).getPrice())){
+            if(!price.equals(bookModels.get(i).getPrice()) ){
                 throw new PriceNotTheSameException(String.format("price for item %s not the same with store",bookModels.get(i).getName()));
             }
             totalPrice = totalPrice.add(price.multiply(BigDecimal.valueOf(order.getOrderItems().get(i).getTotalQuantity())));
+
         }
         if(order.getTotalPrice()!=null){
+            totalPrice = totalPrice.stripTrailingZeros();
+            order.setTotalPrice(order.getTotalPrice().stripTrailingZeros());
             if(!totalPrice.equals(order.getTotalPrice())){
                 throw new TotalPriceNotTheSameException(String.format("total price for order %s not correct ",order.getOrderNumber()));
             }
