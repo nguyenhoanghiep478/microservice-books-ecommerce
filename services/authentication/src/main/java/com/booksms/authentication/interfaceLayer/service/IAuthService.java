@@ -8,4 +8,8 @@ public interface IAuthService {
     UserDTO register(UserDTO credential);
     Boolean validateToken(String token);
     AuthResponse login(AuthRequest request);
+
+    Integer getTotalUser();
+
+    UserDTO findById(Integer id);
 }

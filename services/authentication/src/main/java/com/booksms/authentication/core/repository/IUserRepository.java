@@ -16,4 +16,6 @@ public interface IUserRepository {
     Set<Permission> findPermissionById(Integer id);
 
     List<UserCredential> search(List<SearchUserCriteria> criteriaList);
+
+    List<UserCredential> findAll();
 }

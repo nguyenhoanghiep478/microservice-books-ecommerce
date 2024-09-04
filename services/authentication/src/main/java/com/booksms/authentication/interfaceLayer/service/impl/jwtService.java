@@ -8,13 +8,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +28,18 @@ public class jwtService implements IJwtService {
 
     @Override
     public String isValidToken(String token) {
-        return !isExpiredToken(token)? extractId(token) : null;
+        return !isExpiredToken(token)? extractUsername(token) : null;
+    }
+    @Override
+    public List<SimpleGrantedAuthority> extractAuthorities(String token) {
+        Claims claims = extractAllClaims(token);
+        List<String> permissions = claims.get("scope",List.class);
+        return permissions.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
-    private String extractId(String token){
+    public String extractUsername(String token){
         return extractClaims(token,Claims::getSubject);
     }
 
@@ -61,8 +69,9 @@ public class jwtService implements IJwtService {
     private String generateToken(Map<String,Object> extraClaims, UserCredential user,String[] permission) {
         return Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(user.getId().toString())
+                .setSubject(user.getEmail())
                 .claim("scope",permission)
+                .claim("id",user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)

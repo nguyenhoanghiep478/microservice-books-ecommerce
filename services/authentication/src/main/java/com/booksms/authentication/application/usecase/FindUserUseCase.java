@@ -15,6 +15,9 @@ public class FindUserUseCase implements BaseUsecase<List<SearchUserCriteria>, Li
     private final IUserRepository userRepository;
     @Override
     public List<UserCredential> execute(List<SearchUserCriteria> criteriaList) {
+        if(criteriaList == null || criteriaList.isEmpty()){
+            return userRepository.findAll();
+        }
         return userRepository.search(criteriaList);
     }
 }

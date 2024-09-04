@@ -65,4 +65,9 @@ public class UserRepository implements IUserRepository {
         query.where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(query).getResultList();
     }
+
+    @Override
+    public List<UserCredential> findAll() {
+        return repository.findAll();
+    }
 }
