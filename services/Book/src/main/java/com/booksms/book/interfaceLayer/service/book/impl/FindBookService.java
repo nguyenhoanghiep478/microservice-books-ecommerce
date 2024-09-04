@@ -3,7 +3,10 @@ package com.booksms.book.interfaceLayer.service.book.impl;
 import com.booksms.book.application.model.BooksSearchCriteria;
 import com.booksms.book.application.usecase.Book.FindUseCase.FindBooksUseCase;
 import com.booksms.book.core.domain.entity.Book;
+import com.booksms.book.interfaceLayer.DTO.Response.BookResponseDTO;
+import com.booksms.book.interfaceLayer.DTO.Response.TopSalesDTO;
 import com.booksms.book.interfaceLayer.service.book.IFindBookService;
+import com.booksms.book.interfaceLayer.servicegateway.OrderServiceGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FindBookService implements IFindBookService {
     private final FindBooksUseCase findBooksUseCase;
+    private final OrderServiceGateway orderServiceGateway;
+
 
     @Override
     public List<Book> findAll() {
@@ -27,12 +32,7 @@ public class FindBookService implements IFindBookService {
                 .operation(":")
                 .value(id)
                 .build();
-        BooksSearchCriteria withIsInStock = BooksSearchCriteria.builder()
-                .key("isInStock")
-                .operation(":")
-                .value(true)
-                .build();
-        return findBooksUseCase.execute(List.of(findById,withIsInStock)).get(0);
+        return findBooksUseCase.execute(List.of(findById)).get(0);
     }
 
     @Override
@@ -123,5 +123,19 @@ public class FindBookService implements IFindBookService {
                 .value(String.valueOf(categoryId))
                 .build();
         return findBooksUseCase.execute(List.of(findByName,findByCategoryId));
+    }
+
+    @Override
+    public List<Book> findTopSales() {
+        List<Integer> ids = orderServiceGateway.getTopSales().stream().map(TopSalesDTO::getBookId).toList();
+
+
+        BooksSearchCriteria findInIds = BooksSearchCriteria.builder()
+                .key("id")
+                .operation("IN")
+                .value(ids)
+                .build();
+
+        return findBooksUseCase.execute(List.of(findInIds));
     }
 }

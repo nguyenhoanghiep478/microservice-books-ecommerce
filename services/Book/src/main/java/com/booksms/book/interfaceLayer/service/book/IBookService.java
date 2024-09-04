@@ -14,11 +14,11 @@ public interface IBookService {
 
     BookRequestDTO insert(BookRequestDTO request) throws IOException;
 
-    BookRequestDTO updateById(int id, BookRequestDTO request);
+    BookRequestDTO updateById(int id, BookRequestDTO request) throws IOException;
 
     BookRequestDTO deleteById(int id);
 
-    BookRequestDTO updateQuantityById(int id, UpdateQuantityDTO request);
+    BookRequestDTO updateQuantityById(int id, UpdateQuantityDTO request) throws IOException;
 
     List<BookRequestDTO> findByCategoryIdAndName(int categoryId, String name);
 
@@ -28,11 +28,13 @@ public interface IBookService {
 
     BookRequestDTO findByName(String name);
 
-    BookRequestDTO findById(int id);
+    BookResponseDTO findById(int id) throws IOException;
 
     List<ShortBookDTO> findAllInStock();
 
     List<BookResponseDTO> findAll() throws IOException;
     List<BookRequestDTO> findAll(Pageable pageable);
     List<ShortBookDTO> findAllByIds(Set<Integer> ids);
+
+    List<BookResponseDTO> findTopSales() throws IOException;
 }

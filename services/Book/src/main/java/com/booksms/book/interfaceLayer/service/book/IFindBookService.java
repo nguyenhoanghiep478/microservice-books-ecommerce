@@ -1,6 +1,7 @@
 package com.booksms.book.interfaceLayer.service.book;
 
 import com.booksms.book.core.domain.entity.Book;
+import com.booksms.book.interfaceLayer.DTO.Response.BookResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface IFindBookService {
     boolean existByName(String name);
 
     List<Book> findOneLikeNameAndCategoryId(String name, int categoryId);
+
+    List<Book> findTopSales();
 }
