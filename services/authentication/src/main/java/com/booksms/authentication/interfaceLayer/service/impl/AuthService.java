@@ -115,6 +115,22 @@ public class AuthService  implements IAuthService {
 
     }
 
+    @Override
+    public Integer getTotalUser() {
+        return findUserUseCase.execute(null).size();
+    }
+
+    @Override
+    public UserDTO findById(Integer id) {
+        SearchUserCriteria fieldId=  SearchUserCriteria.builder()
+                .key("id")
+                .operation(":")
+                .value(String.valueOf(id))
+                .build();
+
+        return modelMapper.map(findUserUseCase.execute(List.of(fieldId)).get(0), UserDTO.class);
+    }
+
 
     private String[] getPermissionsByUserCredential(UserCredential userCredential) {
         Set<PermissionModel> permissionModels = getPermissionUseCase.execute(modelMapper.map(userCredential, UserModel.class));

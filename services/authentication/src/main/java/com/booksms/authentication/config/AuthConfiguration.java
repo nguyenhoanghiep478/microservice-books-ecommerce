@@ -15,12 +15,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class AuthConfiguration {
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -28,15 +29,16 @@ public class AuthConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v1/book/anonymous/*",
-                                "api/v1/auth/anonymous/*",
-                                "api/v1/marketing/anonymous/*",
-                                "api/v1/payment/anonymous/*",
-                                "api/v1/order/anonymous/*",
-                                "api/v1/distributor/anonymous/*"
+                                "/api/v1/auth/anonymous/*",
+                                "/api/v1/marketing/anonymous/*",
+                                "/api/v1/payment/anonymous/*",
+                                "/api/v1/order/anonymous/*",
+                                "/api/v1/distributor/anonymous/*"
                         ).permitAll()
                         .anyRequest()
                         .authenticated()
                 )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .build();
@@ -54,10 +56,12 @@ public class AuthConfiguration {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
     @Bean
     public UserDetailsService userDetailsService(){
         return new CustomUserDetailService();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
