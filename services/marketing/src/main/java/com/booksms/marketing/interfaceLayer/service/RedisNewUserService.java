@@ -27,6 +27,8 @@ public class RedisNewUserService{
        redisTemplate.opsForValue().set(token, newUserRegister,duration);
    }
 
+
+
     public NewUserRegister get(Long token){
        var object = redisTemplate.opsForValue().get(token);
 

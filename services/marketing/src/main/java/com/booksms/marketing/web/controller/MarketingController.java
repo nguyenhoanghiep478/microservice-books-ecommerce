@@ -30,7 +30,6 @@ public class MarketingController {
     @PostMapping("/verify-token")
     public ResponseEntity<?> validateToken(@RequestBody VerifyUserDTO verifyUserDTO){
         String message=  emailService.verifyToken(verifyUserDTO);
-
         return ResponseEntity.ok(message);
     }
 }
