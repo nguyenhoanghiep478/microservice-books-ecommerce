@@ -7,6 +7,7 @@
 - Docker
 - npm (14 hoặc cao hơn)
 - Java (JDK 17 hoặc cao hơn)
+- Spring Boot (3.x)
 - Kafka và Zookeeper
 - IDE Intellij
 #### Các bước thực hiện
