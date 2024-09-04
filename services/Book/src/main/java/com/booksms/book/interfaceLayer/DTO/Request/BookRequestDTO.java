@@ -32,4 +32,5 @@ public class BookRequestDTO {
     @NotNull(message = "chapter is required to audit version")
     private Integer chapter;
     private Boolean isInStock;
+    private OrderType orderType;
 }

@@ -1,17 +1,17 @@
 package com.booksms.book.application.usecase.Book.CreateHandlerUseCase;
 
+import com.booksms.book.application.model.BookModel;
 import com.booksms.book.application.usecase.BaseUseCase;
 import com.booksms.book.application.usecase.Book.CreateUseCase.CreateBookUseCase;
 import com.booksms.book.application.usecase.Book.UpdateUseCase.UpdateBookUseCase;
-import com.booksms.book.application.usecase.Category.FindCategoryUseCase;
 import com.booksms.book.core.domain.entity.Book;
 import com.booksms.book.core.domain.exception.MissingArgumentException;
 import com.booksms.book.core.domain.repository.IBookRepository;
-import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Component
@@ -22,13 +22,16 @@ public class CreateBookHandlerUseCase implements BaseUseCase<Book, Book> {
     private final IBookRepository bookRepository;
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Book execute(Book book) {
+    public Book execute(Book book) throws IOException {
         if(book.getName() != null){
             Optional<Book> existingBook = bookRepository.findByName(book.getName());
             if(existingBook.isPresent()){
-                Book bookToUpdate = existingBook.get();
-                bookToUpdate.setAvailableQuantity(bookToUpdate.getAvailableQuantity() + book.getAvailableQuantity());
-                return updateBookUseCase.execute(bookToUpdate);
+                BookModel bookModel = BookModel.builder()
+                        .name(book.getName())
+                        .availableQuantity(book.getAvailableQuantity() + existingBook.get().getAvailableQuantity())
+                        .id(book.getId())
+                        .build();
+                return updateBookUseCase.execute(bookModel);
             }
         }
         if(book.getCategory() == null){

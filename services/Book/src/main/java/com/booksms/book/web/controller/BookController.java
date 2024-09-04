@@ -1,5 +1,6 @@
 package com.booksms.book.web.controller;
 
+import com.booksms.book.core.domain.exception.UpdateFailureException;
 import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
 import com.booksms.book.interfaceLayer.DTO.Request.UpdateQuantityDTO;
 import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
@@ -100,7 +101,7 @@ public class BookController {
                         .build());
     }
     @PostMapping("/update-quantity")
-    public ResponseEntity<?> UpdateBookQuantity( @RequestBody @Valid UpdateQuantityDTO request){
+    public ResponseEntity<?> UpdateBookQuantity( @RequestBody @Valid UpdateQuantityDTO request) throws IOException {
         BookRequestDTO bookRequestDTO = service.updateQuantityById(request.getId(), request);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("updateBookQuantitySuccessful"))
@@ -110,8 +111,51 @@ public class BookController {
     }
 
     @PutMapping("/update-book-by-id/{id}")
-    public ResponseEntity<?> UpdateBookById(@PathVariable int id,@RequestBody @Valid BookRequestDTO request){
-        //update new book
+    public ResponseEntity<?> UpdateBookById(@PathVariable int id,
+                                            @RequestParam(value = "image",required = false) MultipartFile image,
+                                            @RequestParam(value = "title",required = false) String title,
+                                            @RequestParam(value = "name",required = false) String name,
+                                            @RequestParam(value = "price",required = false) Double price,
+                                            @RequestParam(value = "quantity",required = false) Integer quantity,
+                                            @RequestParam(value = "isInStock",required = false) Boolean isInStock,
+                                            @RequestParam(value = "categoryId",required = false) String categoryId) throws IOException {
+
+        Boolean shouldUpdate = Boolean.FALSE;
+        BookRequestDTO request =new BookRequestDTO();
+        if(name != null && !name.isEmpty()){
+            String[] splitName= name.split(" ");
+            Integer chapter = Integer.valueOf(splitName[splitName.length-1]);
+            shouldUpdate = Boolean.TRUE;
+            request.setName(name);
+            request.setChapter(chapter);
+        }
+        if(title != null && !title.isEmpty()){
+            shouldUpdate = Boolean.TRUE;
+            request.setTitle(title);
+        }
+        if(price != null){
+            shouldUpdate = Boolean.TRUE;
+            request.setPrice(BigDecimal.valueOf(price));
+        }
+        if(quantity != null){
+            shouldUpdate = Boolean.TRUE;
+            request.setAvailableQuantity(quantity);
+        }
+        if(categoryId != null && !categoryId.isEmpty()){
+            shouldUpdate = Boolean.TRUE;
+            request.setCategoryId(Integer.valueOf(categoryId));
+        }
+        if(isInStock != null){
+            shouldUpdate = Boolean.TRUE;
+            request.setIsInStock(isInStock);
+        }
+        if(image != null){
+            shouldUpdate = Boolean.TRUE;
+            request.setImage(image);
+        }
+        if(!shouldUpdate){
+            throw new UpdateFailureException("nothing to update");
+        }
         BookRequestDTO result = service.updateById(id,request);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("updateBookSuccessful"))

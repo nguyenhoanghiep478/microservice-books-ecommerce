@@ -62,9 +62,9 @@ public class BookAnonymousController {
                 .build());
     }
     @GetMapping("/get-by-id/{id}")
-    public ResponseEntity<?> GetBookById(@PathVariable int id) {
+    public ResponseEntity<?> GetBookById(@PathVariable int id) throws IOException {
         //get bookDTO
-        BookRequestDTO result = service.findById(id);
+        BookResponseDTO result = service.findById(id);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(List.of("getBookByIdSuccessful"))
                 .status(200)
@@ -107,6 +107,17 @@ public class BookAnonymousController {
         List<BookRequestDTO> result = service.findAllLikeNameAndCategoryId(categoryId, name);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(List.of("GetBookLikeNameAndCategoryIdSuccessful"))
+                .status(200)
+                .result(result)
+                .build()
+        );
+    }
+
+    @GetMapping("/get-top-sales")
+    public ResponseEntity<?> GetTopSales() throws IOException {
+        List<BookResponseDTO> result = service.findTopSales();
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message(List.of("Get top sales successful"))
                 .status(200)
                 .result(result)
                 .build()

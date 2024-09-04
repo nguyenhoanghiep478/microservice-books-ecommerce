@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 import static com.booksms.book.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
 
@@ -31,7 +32,7 @@ public class CreateBookService implements ICreateBookService {
     public Book insert(BookRequestDTO request) throws IOException {
         Category category = findCategoryService.findById(request.getCategoryId());
 
-        String pathImage = handleImageToPath(request.getImage());
+        String pathImage = handleImageToPath(request.getImage(), request.getName());
 
         Book book = bookMapper.toEntity(request, Book.class);
         book.setImage(pathImage);
@@ -40,19 +41,21 @@ public class CreateBookService implements ICreateBookService {
         return bookCreateHandlerUseCase.execute(book);
     }
 
-    private String handleImageToPath(MultipartFile image) throws IOException {
+    private String handleImageToPath(MultipartFile image,String fileName) throws IOException {
         if (image == null) {
             return null;
         }
 
-        String fileName = image.getOriginalFilename();
-        String filePath = IMAGE_STORAGE_PATH + fileName;
+        String suffix = Objects.requireNonNull(image.getOriginalFilename()).substring(image.getOriginalFilename().lastIndexOf("."));
+        String lastFileName = fileName + suffix;
+
+        String filePath = IMAGE_STORAGE_PATH + lastFileName;
 
         Files.createDirectories(Paths.get(IMAGE_STORAGE_PATH));
 
         File destinationFile = new File(filePath);
         image.transferTo(destinationFile);
 
-        return fileName;
+        return lastFileName;
     }
 }

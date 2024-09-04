@@ -37,7 +37,7 @@ import static com.booksms.book.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PAT
 
 @Service
 @RequiredArgsConstructor
-public class BookService implements IBookService{
+public class BookService implements IBookService {
     private final GenericMapper<Book, BookRequestDTO, BookRequestDTO> bookMapper;
     private final GenericMapper<Book, ShortBookDTO, ShortBookDTO> shortBookMapper;
     @Getter
@@ -57,21 +57,21 @@ public class BookService implements IBookService{
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BookRequestDTO updateById(int id, BookRequestDTO request) {
+    public BookRequestDTO updateById(int id, BookRequestDTO request) throws IOException {
         Book book = updateBookService.updateById(id, request);
-        return  bookMapper.toResponse(book, BookRequestDTO.class);
+        return bookMapper.toResponse(book, BookRequestDTO.class);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BookRequestDTO deleteById(int id) {
         Optional<Book> book = bookJpaRepository.findById(id);
-        if(book.isEmpty()){
+        if (book.isEmpty()) {
             throw new BookNotFoundException(String.format("Book with id %s not found", id));
         }
         bookJpaRepository.deleteById(id);
         BookRequestDTO bookRequestDTO = bookMapper.toResponse(book.get(), BookRequestDTO.class);
-        if(bookRequestDTO ==null){
+        if (bookRequestDTO == null) {
             throw new InternalException("some thing wrong , please try again");
         }
         return bookRequestDTO;
@@ -79,27 +79,28 @@ public class BookService implements IBookService{
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BookRequestDTO updateQuantityById(int id, UpdateQuantityDTO request) {
+    public BookRequestDTO updateQuantityById(int id, UpdateQuantityDTO request) throws IOException {
         Book book = updateBookService.updateQuantityById(id, request);
         return bookMapper.toResponse(book, BookRequestDTO.class);
     }
 
-    @KafkaListener(id = "consumer-created-order",topics = "order-created")
+    @KafkaListener(id = "consumer-created-order", topics = "order-created")
     @Transactional(rollbackFor = Exception.class)
-    public void updateQuantity(OrdersDTO ordersDTO){
-        try{
+    public void updateQuantity(OrdersDTO ordersDTO) {
+        try {
             for (OrderItemDTO item : ordersDTO.getOrderItems()) {
                 updateQuantityById(item.getBookId(), UpdateQuantityDTO.builder()
+                        .id(item.getBookId())
                         .quantity(item.getTotalQuantity())
                         .type(ordersDTO.getOrderType())
                         .build());
             }
 
             kafkaTemplate.send("order-created-response", ResponseOrderCreated.builder()
-                            .serviceName("BookService")
-                            .message("successful")
+                    .serviceName("BookService")
+                    .message("successful")
                     .build());
-        }catch (InSufficientQuantityException e){
+        } catch (InSufficientQuantityException | IOException e) {
             kafkaTemplate.send("order-created-response", ResponseOrderCreated.builder()
                     .serviceName("BookService")
                     .message(e.getMessage())
@@ -111,7 +112,7 @@ public class BookService implements IBookService{
 
     @Override
     public List<BookRequestDTO> findByCategoryIdAndName(int categoryId, String name) {
-        List<Book> books = findBookService.findByCategoryIdAndName(categoryId,name);
+        List<Book> books = findBookService.findByCategoryIdAndName(categoryId, name);
         return bookMapper.toListResponse(books, BookRequestDTO.class);
     }
 
@@ -123,7 +124,7 @@ public class BookService implements IBookService{
 
     @Override
     public List<BookRequestDTO> findAllLikeNameAndCategoryId(int categoryId, String name) {
-        List<Book> books = findBookService.findByCategoryIdAndName(categoryId,name);
+        List<Book> books = findBookService.findByCategoryIdAndName(categoryId, name);
         return bookMapper.toListResponse(books, BookRequestDTO.class);
     }
 
@@ -134,50 +135,70 @@ public class BookService implements IBookService{
     }
 
     @Override
-    public BookRequestDTO findById(int id) {
+    public BookResponseDTO findById(int id) throws IOException {
         Book book = findBookService.findById(id);
-        return bookMapper.toResponse(book, BookRequestDTO.class);
+        BookResponseDTO bookResponseDTO = modelMapper.map(book, BookResponseDTO.class);
+        bookResponseDTO.setImage(getImageBase64(book.getImage()));
+        return bookResponseDTO;
+    }
+
+    private BookRequestDTO findBookWithoutEncodeImage(int id) {
+        Book book = findBookService.findById(id);
+        return modelMapper.map(book, BookRequestDTO.class);
     }
 
     @Override
     public List<ShortBookDTO> findAllInStock() {
         List<Book> books = findBookService.findAllInStock();
-        return shortBookMapper.toListResponse(books,ShortBookDTO.class);
+        return shortBookMapper.toListResponse(books, ShortBookDTO.class);
     }
 
     @Override
     public List<BookResponseDTO> findAll() throws IOException {
         List<Book> books = findBookService.findAll();
-        Path filePath;
-        List<BookResponseDTO> bookRequestDTOList = new ArrayList<>();
-        for (Book book : books) {
-            filePath = Paths.get(IMAGE_STORAGE_PATH).resolve(book.getImage()).normalize();
-            File file = filePath.toFile();
-            BookResponseDTO bookRequestDTO = modelMapper.map(book, BookResponseDTO.class);
-            if (file.exists()) {
-                byte[] fileContent = Files.readAllBytes(filePath);
-
-                String base64Image = Base64.getEncoder().encodeToString(fileContent);
-                bookRequestDTO.setImage(base64Image);
-            }
-            bookRequestDTOList.add(bookRequestDTO);
-        }
-
-        return bookRequestDTOList;
+        return toResponse(books);
     }
+
 
     @Override
     public List<BookRequestDTO> findAll(Pageable pageable) {
-        return bookMapper.toListResponse(findBookService.findAll(pageable),BookRequestDTO.class);
+        return bookMapper.toListResponse(findBookService.findAll(pageable), BookRequestDTO.class);
     }
 
     @Override
     public List<ShortBookDTO> findAllByIds(Set<Integer> ids) {
         List<ShortBookDTO> result = new ArrayList<>();
-        for(Integer id : ids){
-            result.add(modelMapper.map(findById(id),ShortBookDTO.class));
+        for (Integer id : ids) {
+            result.add(modelMapper.map(findBookWithoutEncodeImage(id), ShortBookDTO.class));
         }
         return result;
+    }
+
+    @Override
+    public List<BookResponseDTO> findTopSales() throws IOException {
+        List<Book> books = findBookService.findTopSales();
+        return toResponse(books);
+    }
+
+    private List<BookResponseDTO> toResponse(List<Book> books) throws IOException {
+        List<BookResponseDTO> response = new ArrayList<>();
+        for (Book book : books) {
+            BookResponseDTO bookRequestDTO = modelMapper.map(book, BookResponseDTO.class);
+            bookRequestDTO.setImage(getImageBase64(book.getImage()));
+
+            response.add(bookRequestDTO);
+        }
+        return response;
+    }
+
+    private String getImageBase64(String path) throws IOException {
+        Path filePath = Paths.get(IMAGE_STORAGE_PATH).resolve(path).normalize();
+        File file = filePath.toFile();
+        if (file.exists()) {
+            byte[] fileContent = Files.readAllBytes(filePath);
+            return Base64.getEncoder().encodeToString(fileContent);
+        }
+        return null;
     }
 
 }

@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,4 +27,6 @@ public class BookResponseDTO {
     private String image;
     private Integer chapter;
     private Boolean isInStock;
+    private Date createdDate;
+    private Date lastModifiedDate;
 }

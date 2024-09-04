@@ -121,8 +121,20 @@ public class BookRepository implements IBookRepository {
                     break;
                 case "<":
                     predicates.add(builder.lessThan(root.get(criteria.getKey()), (Comparable) criteria.getValue()));
+                    break;
                 case "LIKE":
                     predicates.add(builder.like(root.get(criteria.getKey()), "%" + criteria.getValue() + "%"));
+                    break;
+                case "IN":
+                    if(criteria.getValue() instanceof List<?>){
+                        List<Integer> ids = ((List<?>) criteria.getValue())
+                                .stream()
+                                .filter(item -> item instanceof Integer)
+                                .map(item -> (Integer) item)
+                                .toList();
+
+                        predicates.add(root.get(criteria.getKey()).in(ids));
+                    }
                     break;
             }
         }

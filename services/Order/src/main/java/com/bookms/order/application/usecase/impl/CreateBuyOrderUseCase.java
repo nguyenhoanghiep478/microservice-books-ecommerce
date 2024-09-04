@@ -1,4 +1,4 @@
-package com.bookms.order.application.usecase;
+package com.bookms.order.application.usecase.impl;
 
 import com.bookms.order.application.BaseUseCase;
 import com.bookms.order.core.domain.Entity.Orders;
