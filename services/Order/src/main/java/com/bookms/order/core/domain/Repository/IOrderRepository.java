@@ -1,5 +1,6 @@
 package com.bookms.order.core.domain.Repository;
 
+import com.bookms.order.application.model.Criteria;
 import com.bookms.order.core.domain.Entity.OrderType;
 import com.bookms.order.core.domain.Entity.Orders;
 import com.bookms.order.core.domain.Entity.Status;
@@ -32,4 +33,8 @@ public interface IOrderRepository {
     List<Orders> findAll();
 
     Orders save(Orders orders);
+
+    List<Orders> findByCriteria(List<Criteria> criteria);
+
+    Object findByNativeQuery(String sql);
 }

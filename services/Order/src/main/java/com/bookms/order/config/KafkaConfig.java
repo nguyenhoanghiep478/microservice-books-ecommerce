@@ -23,6 +23,11 @@ public class KafkaConfig {
     }
 
     @Bean
+    public NewTopic preCreateOder(){
+        return new NewTopic("pre-create-order", 1, (short) 1);
+    }
+
+    @Bean
     public JsonMessageConverter jsonMessageConverter() {
         return new JsonMessageConverter();
     }

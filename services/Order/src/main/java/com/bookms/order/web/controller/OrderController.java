@@ -3,10 +3,9 @@ package com.bookms.order.web.controller;
 import com.bookms.order.application.model.OrdersModel;
 import com.bookms.order.application.model.PaymentModel;
 import com.bookms.order.core.domain.Entity.OrderType;
+import com.bookms.order.core.domain.Entity.Status;
 import com.bookms.order.infrastructure.FeignClient.PaymentClient;
-import com.bookms.order.interfaceLayer.DTO.OrderDTO;
-import com.bookms.order.interfaceLayer.DTO.ResponseDTO;
-import com.bookms.order.interfaceLayer.DTO.ResponsePayment;
+import com.bookms.order.interfaceLayer.DTO.*;
 import com.bookms.order.interfaceLayer.service.IOrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +24,6 @@ import java.util.List;
 public class OrderController {
     private final IOrderService service;
     private final PaymentClient paymentClient;
-    private final ObjectMapper objectMapper;
-    private final KafkaTemplate<String, OrdersModel> kafkaTemplate;
 
     @GetMapping("/get-all")
     public ResponseEntity<?> GetAll() {
@@ -61,24 +58,64 @@ public class OrderController {
 //        );
 //    }
 
+    @GetMapping("/get-top-sale")
+    public ResponseEntity<?> GetTopSale() {
+        List<TopSaleDTO> topSaleDTOS = service.getTopSale();
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message(Arrays.asList("get top sales successful"))
+                .status(200)
+                .result(topSaleDTOS)
+                .build()
+        );
+    }
 
+    @GetMapping("/get-latest/{amount}")
+    public ResponseEntity<?> GetFiveLatest(@PathVariable int amount) {
+       List<OrderDTO> latest = service.findLatest(amount);
+
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message(Arrays.asList("getOrderSuccessful"))
+                .status(200)
+                .result(latest)
+                .build()
+        );
+    }
+
+
+    @GetMapping("/get-chart-order-in-week")
+    public ResponseEntity<?> GetChartOrderInWeek() {
+        List<ChartDTO> chart = service.getChartOrderInWeek();
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message(Arrays.asList("OrderSuccessful"))
+                .status(200)
+                .result(chart)
+                .build()
+        );
+    }
 
     @PostMapping("/pay-order")
     public ResponseEntity<?> PayOrder(@RequestBody OrderDTO request) {
         PaymentModel paymentModel = service.prePay(request);
+        if(paymentModel == null){
+            return ResponseEntity.ok(ResponseDTO.builder()
+                    .message(Arrays.asList("sent token"))
+                    .status(200)
+                    .result(null)
+                    .build()
+            );
+        }
         return paymentClient.create(paymentModel);
     }
 
 
+
     @PostMapping("/success-payment")
     public ResponseEntity<?> SuccessPayment(@RequestBody ResponsePayment responsePayment) {
-        OrdersModel orderIsPaidSucceed = service.afterPay(responsePayment.getOrderNumber());
-        orderIsPaidSucceed.setPaymentMethod(responsePayment.getPaymentMethod());
-        orderIsPaidSucceed.setPaymentId(responsePayment.getPaymentId());
-        OrderDTO result = service.createOrder(orderIsPaidSucceed);
+        OrdersModel orderWasPaid = service.handleOrderWasPaid(responsePayment);
+        OrderDTO result = service.createOrder(orderWasPaid);
         service.completeOrder(responsePayment.getOrderNumber());
         return ResponseEntity.ok(ResponseDTO.builder()
-                .message(Arrays.asList("getOrderSuccessful"))
+                .message(Arrays.asList("OrderSuccessful"))
                 .status(200)
                 .result(result)
                 .build()

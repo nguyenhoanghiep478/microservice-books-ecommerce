@@ -1,9 +1,14 @@
 package com.bookms.order.interfaceLayer.service.impl;
 
+import com.bookms.order.application.model.CustomerModel;
 import com.bookms.order.application.model.OrdersModel;
 import com.bookms.order.application.model.PaymentModel;
+import com.bookms.order.application.servicegateway.IAuthServiceGateway;
+import com.bookms.order.interfaceLayer.DTO.ChartDTO;
 import com.bookms.order.interfaceLayer.DTO.OrderDTO;
 import com.bookms.order.core.domain.Entity.Orders;
+import com.bookms.order.interfaceLayer.DTO.ResponsePayment;
+import com.bookms.order.interfaceLayer.DTO.TopSaleDTO;
 import com.bookms.order.interfaceLayer.service.ICreateOrderService;
 import com.bookms.order.interfaceLayer.service.IFindOrderService;
 import com.bookms.order.interfaceLayer.service.IOrderService;
@@ -30,6 +35,7 @@ public class OrderService implements IOrderService {
     private final ICreateOrderService createOrderService;
     private final IFindOrderService findOrderService;
     private final ModelMapper modelMapper;
+    private final IAuthServiceGateway authServiceGateway;
 
     @Override
     public List<OrderDTO> findAll() {
@@ -90,5 +96,35 @@ public class OrderService implements IOrderService {
     @Override
     public void handlePaymentResponse(OrderDTO orderDTO) {
         log.info(String.valueOf(orderDTO.getCustomerId()));
+    }
+
+    @Override
+    public List<OrderDTO> findLatest(int amount) {
+        List<Orders> orders = findOrderService.findLatest(amount);
+        List<OrderDTO> result = new ArrayList<>();
+        for(Orders order : orders) {
+            result.add(modelMapper.map(order, OrderDTO.class));
+        }
+        for(OrderDTO order : result) {
+            CustomerModel customer= authServiceGateway.findCustomerById(order.getCustomerId());
+            order.setCustomerName(customer.getFirstName()+ " " + customer.getLastName());
+        }
+        return result;
+    }
+
+    @Override
+    public OrdersModel handleOrderWasPaid(ResponsePayment responsePayment) {
+        return createOrderService.handleOrderWasPaid(responsePayment);
+    }
+
+    @Override
+    public List<TopSaleDTO> getTopSale() {
+        return findOrderService.getTopSales();
+    }
+
+    @Override
+    public List<ChartDTO> getChartOrderInWeek() {
+        return findOrderService.getChartOrderInWeek();
+
     }
 }

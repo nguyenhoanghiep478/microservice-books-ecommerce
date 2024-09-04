@@ -1,7 +1,6 @@
-package com.bookms.order.application.usecase;
+package com.bookms.order.application.usecase.impl;
 
 import com.bookms.order.application.model.BookModel;
-import com.bookms.order.core.domain.Entity.OrderItems;
 import com.bookms.order.core.domain.Entity.Orders;
 import com.bookms.order.core.domain.Exception.BookNotInStockException;
 import com.bookms.order.core.domain.Exception.CreateFailedException;
@@ -10,8 +9,6 @@ import com.bookms.order.core.domain.Repository.IOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 @Component
