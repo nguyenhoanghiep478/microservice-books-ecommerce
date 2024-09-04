@@ -2,6 +2,7 @@ package com.booksms.payment.web.controller;
 
 import com.booksms.payment.application.model.PaypalCustomModel;
 import com.booksms.payment.application.model.ResponsePaymentPageModel;
+import com.booksms.payment.application.model.Status;
 import com.booksms.payment.infrastructure.FeignClient.OrderClient;
 import com.booksms.payment.infrastructure.servicegateway.PaypalGateway;
 import com.booksms.payment.interfaceLayer.dto.PaymentDTO;
@@ -15,6 +16,7 @@ import com.paypal.base.rest.PayPalRESTException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,7 @@ public class PaypalController {
     private final OrderClient orderClient;
     private final OrderRedisService orderRedisService;
     private final IPaymentService paymentService;
+    private final KafkaTemplate<String,ResponsePayment> kafkaTemplate;
     @GetMapping("/")
     public String HomePage(){
         return "index";
@@ -43,11 +46,12 @@ public class PaypalController {
                             .method(paymentDTO.getMethod())
                             .intent(paymentDTO.getIntent())
                             .description(paymentDTO.getDescription())
-                    .build(),ResponsePayment.builder()
+                                .build()
+                            ,ResponsePayment
+                            .builder()
                             .paymentMethod(paymentDTO.getMethod())
                             .orderNumber(paymentDTO.getOrderNumber())
-                    .build());
-            paymentService.saveToRedis(paymentDTO.getOrderNumber(),paymentDTO);
+                            .build());
             for (Links link : payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     return ResponseEntity.ok(ResponseDTO.builder()
@@ -76,16 +80,20 @@ public class PaypalController {
     @GetMapping("/success")
     public String paymentSuccess(
             @RequestParam("paymentId") String paymentId,
-            @RequestParam("PayerID") String payerId
+            @RequestParam("PayerID") String payerId,
+            @RequestParam("orderNumber") String orderNumber
     ) {
         try{
-            ResponsePayment responsePayment = orderRedisService.getValue(paymentId);
+            ResponsePayment responsePayment = orderRedisService.getValue(orderNumber);
+            responsePayment.setStatus(Status.COMPLETED);
+
             PaymentDTO paymentDTO =  paymentService.save(responsePayment.getOrderNumber());
             responsePayment.setPaymentId(paymentDTO.getId());
-            orderClient.callBack(responsePayment);
-
             Payment payment = paypalGateway.excutePayment(paymentId,payerId);
-            orderRedisService.deleteValue(paymentId);
+
+            kafkaTemplate.send("payment-response",responsePayment);
+
+            orderRedisService.deleteValue(orderNumber);
             if(payment.getState().equals("approved")){
                return "paymentSuccess";
             }
@@ -96,7 +104,15 @@ public class PaypalController {
         return "paymentSuccess";
     }
     @GetMapping("/cancel")
-    public String paymentCancel(){
+    public String paymentCancel(
+            @RequestParam("orderNumber") String orderNumber
+    ){
+        ResponsePayment responsePayment = orderRedisService.getValue(orderNumber);
+        responsePayment.setStatus(Status.CANCELLED);
+
+        kafkaTemplate.send("payment-response",responsePayment);
+
+        orderRedisService.deleteValue(orderNumber);
         return "paymentCancel";
     }
     @GetMapping("/error")

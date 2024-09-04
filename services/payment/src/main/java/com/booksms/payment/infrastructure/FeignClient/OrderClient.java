@@ -10,4 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface OrderClient {
     @PostMapping("/success-payment")
     ResponseEntity<?> callBack( @RequestBody ResponsePayment orderNumber);
+
+    @PostMapping("/cancel-payment")
+    ResponseEntity<?> callBackCancel(@RequestBody ResponsePayment orderNumber);
+
 }

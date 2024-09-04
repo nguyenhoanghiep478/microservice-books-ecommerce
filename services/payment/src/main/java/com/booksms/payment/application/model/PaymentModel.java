@@ -18,6 +18,7 @@ public class PaymentModel {
     private String paymentMethod;
     private Long orderNumber;
     private Double totalAmount;
+    private Status status;
     @JsonIgnore
     private Timestamp createdAt;
     @JsonIgnore

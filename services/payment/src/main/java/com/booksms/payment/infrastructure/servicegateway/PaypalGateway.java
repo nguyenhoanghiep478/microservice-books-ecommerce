@@ -30,12 +30,12 @@ public class PaypalGateway {
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);
 
+        paypalCustomModel.setOrderNumber(responsePayment.getOrderNumber());
         Payment payment = getPayment(paypalCustomModel, transactions);
-
 
         Payment createdPayment = payment.create(apiContext);
 
-        orderRedisService.setValue(createdPayment.getId(),responsePayment);
+        orderRedisService.setValue(String.valueOf(responsePayment.getOrderNumber()),responsePayment);
         return createdPayment;
     }
 
@@ -57,6 +57,9 @@ public class PaypalGateway {
         payment.setIntent(paypalCustomModel.getIntent());
         payment.setPayer(payer);
         payment.setTransactions(transactions);
+
+
+
 
         RedirectUrls redirectUrls = new RedirectUrls();
         redirectUrls.setCancelUrl(paypalCustomModel.getCancelUrl());
