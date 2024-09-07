@@ -1,7 +1,7 @@
 package com.booksms.store.core.domain.exception;
 
-public class InventoryExisted extends RuntimeException{
-    public InventoryExisted(String message) {
+public class InventoryExistedException extends RuntimeException{
+    public InventoryExistedException(String message) {
         super(message);
     }
 }

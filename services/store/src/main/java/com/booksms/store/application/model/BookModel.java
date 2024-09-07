@@ -1,6 +1,6 @@
-package com.booksms.book.application.model;
+package com.booksms.store.application.model;
 
-import com.booksms.book.interfaceLayer.DTO.Request.OrderType;
+import com.booksms.store.interfaceLayer.DTO.Request.OrderType;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,4 +23,5 @@ public class BookModel {
     private Integer chapter;
     private Boolean isInStock;
     private OrderType orderType;
+    private InventoryModel inventoryModel;
 }

@@ -1,6 +1,6 @@
-package com.booksms.book.infrastructure.JpaRepository;
+package com.booksms.store.infrastructure.JpaRepository;
 
-import com.booksms.book.core.domain.entity.Book;
+import com.booksms.store.core.domain.entity.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

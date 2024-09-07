@@ -1,2 +1,4 @@
-package com.booksms.shipment.interfaceLayer.service;public interface IFindShipmentService {
+package com.booksms.shipment.interfaceLayer.service;
+
+public interface IFindShipmentService {
 }

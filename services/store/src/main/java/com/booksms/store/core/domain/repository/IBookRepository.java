@@ -1,7 +1,7 @@
-package com.booksms.book.core.domain.repository;
+package com.booksms.store.core.domain.repository;
 
-import com.booksms.book.application.model.BooksSearchCriteria;
-import com.booksms.book.core.domain.entity.Book;
+import com.booksms.store.application.model.BooksSearchCriteria;
+import com.booksms.store.core.domain.entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

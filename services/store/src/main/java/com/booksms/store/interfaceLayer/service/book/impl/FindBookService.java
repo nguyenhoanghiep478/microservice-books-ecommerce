@@ -1,12 +1,11 @@
-package com.booksms.book.interfaceLayer.service.book.impl;
+package com.booksms.store.interfaceLayer.service.book.impl;
 
-import com.booksms.book.application.model.BooksSearchCriteria;
-import com.booksms.book.application.usecase.Book.FindUseCase.FindBooksUseCase;
-import com.booksms.book.core.domain.entity.Book;
-import com.booksms.book.interfaceLayer.DTO.Response.BookResponseDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.TopSalesDTO;
-import com.booksms.book.interfaceLayer.service.book.IFindBookService;
-import com.booksms.book.interfaceLayer.servicegateway.OrderServiceGateway;
+import com.booksms.store.application.model.BooksSearchCriteria;
+import com.booksms.store.application.usecase.Book.FindUseCase.FindBooksUseCase;
+import com.booksms.store.core.domain.entity.Book;
+import com.booksms.store.interfaceLayer.DTO.Response.TopSalesDTO;
+import com.booksms.store.interfaceLayer.service.book.IFindBookService;
+import com.booksms.store.interfaceLayer.servicegateway.OrderServiceGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

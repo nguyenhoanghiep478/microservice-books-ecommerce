@@ -1,7 +1,7 @@
-package com.booksms.book.interfaceLayer.service.book;
+package com.booksms.store.interfaceLayer.service.book;
 
-import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.book.core.domain.entity.Book;
+import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
+import com.booksms.store.core.domain.entity.Book;
 
 import java.io.IOException;
 

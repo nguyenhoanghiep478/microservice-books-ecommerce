@@ -2,6 +2,7 @@ package com.bookms.order.interfaceLayer.service.impl;
 
 import com.bookms.order.application.model.Criteria;
 import com.bookms.order.application.model.OrderSearchCriteria;
+import com.bookms.order.application.model.OrdersModel;
 import com.bookms.order.application.usecase.impl.FindOrdersUseCase;
 import com.bookms.order.application.usecase.IFindOrderUseCase;
 import com.bookms.order.application.usecase.impl.FindSpecialFieldUseCase;
@@ -89,6 +90,16 @@ public class FindOrderService implements IFindOrderService {
                 .build();
 
         return (List<ChartDTO>) findSpecialFieldUseCase.execute(List.of(searchBySQl));
+    }
+
+    @Override
+    public List<Orders> findByCustomerId(int id) {
+        Criteria criteria = Criteria.builder()
+                .key("customerId")
+                .operator("=")
+                .value(id)
+                .build();
+        return findOrderUseCase.execute(List.of(criteria));
     }
 
 

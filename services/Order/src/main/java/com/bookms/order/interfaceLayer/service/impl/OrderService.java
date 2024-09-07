@@ -127,4 +127,16 @@ public class OrderService implements IOrderService {
         return findOrderService.getChartOrderInWeek();
 
     }
+
+    @Override
+    public OrdersModel handleCodPaymentMethod(OrderDTO request) {
+        OrdersModel model = modelMapper.map(request,OrdersModel.class);
+        return createOrderService.handleCodOrder(model);
+    }
+
+    @Override
+    public List<OrderDTO> findByCustomerId(int id) {
+        return findOrderService.findByCustomerId(id).stream()
+                .map(orders -> modelMapper.map(orders,OrderDTO.class)).toList();
+    }
 }

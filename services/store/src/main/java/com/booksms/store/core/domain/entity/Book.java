@@ -1,4 +1,4 @@
-package com.booksms.book.core.domain.entity;
+package com.booksms.store.core.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.ws.rs.BadRequestException;
@@ -6,8 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -46,7 +49,7 @@ public class Book extends AbstractEntity {
         }
 
         return nearestInventory.getAvailableQuantity();
-               
+
     }
 
     public Integer getAvailableQuantity(){
@@ -90,5 +93,26 @@ public class Book extends AbstractEntity {
 
         // find nearest
         return null;
+    }
+
+    public Set<Inventory> getInventory(Address destination){
+
+        if(inventoryBooks.isEmpty()){
+            return null;
+        }
+
+        if(destination == null){
+            return inventoryBooks.stream().map(InventoryBook::getInventory).collect(Collectors.toSet());
+        }
+
+        InventoryBook nearestInventory = findNearestInventory(destination);
+        if(nearestInventory == null){
+            return null;
+        }
+        return new HashSet<>((Collection) nearestInventory.getInventory());
+    }
+
+    public Set<Inventory> getInventory(){
+        return getInventory(null);
     }
 }

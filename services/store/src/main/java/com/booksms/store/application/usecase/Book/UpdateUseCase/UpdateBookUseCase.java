@@ -1,17 +1,16 @@
-package com.booksms.book.application.usecase.Book.UpdateUseCase;
+package com.booksms.store.application.usecase.Book.UpdateUseCase;
 
-import com.booksms.book.application.model.BookModel;
-import com.booksms.book.application.model.CategorySearchCriteria;
-import com.booksms.book.application.usecase.BaseUseCase;
-import com.booksms.book.application.usecase.Category.FindCategoryUseCase;
-import com.booksms.book.core.domain.entity.Book;
-import com.booksms.book.core.domain.entity.Category;
-import com.booksms.book.core.domain.exception.BookNotFoundException;
-import com.booksms.book.core.domain.exception.InSufficientQuantityException;
-import com.booksms.book.core.domain.exception.UpdateFailureException;
-import com.booksms.book.core.domain.repository.IBookRepository;
-import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.OrderType;
+import com.booksms.store.application.model.BookModel;
+import com.booksms.store.application.model.CategorySearchCriteria;
+import com.booksms.store.application.usecase.BaseUseCase;
+import com.booksms.store.application.usecase.Category.FindCategoryUseCase;
+import com.booksms.store.core.domain.entity.Book;
+import com.booksms.store.core.domain.entity.Category;
+import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
+import com.booksms.store.core.domain.exception.InSufficientQuantityException;
+import com.booksms.store.core.domain.exception.UpdateFailureException;
+import com.booksms.store.core.domain.repository.IBookRepository;
+import com.booksms.store.interfaceLayer.DTO.Request.OrderType;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import static com.booksms.book.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
+import static com.booksms.store.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
 
 @Component
 @RequiredArgsConstructor

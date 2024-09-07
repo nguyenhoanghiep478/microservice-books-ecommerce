@@ -1,2 +1,7 @@
-package com.booksms.shipment.infrastructure.jpa;public interface ShipmentJpaRepository {
+package com.booksms.shipment.infrastructure.jpa;
+
+import com.booksms.shipment.core.domain.entity.ShipmentDetails;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ShipmentJpaRepository extends JpaRepository<ShipmentDetails,Integer> {
 }

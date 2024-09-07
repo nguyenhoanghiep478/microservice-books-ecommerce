@@ -1,9 +1,9 @@
-package com.booksms.book.interfaceLayer.service.category.impl;
+package com.booksms.store.interfaceLayer.service.category.impl;
 
-import com.booksms.book.application.usecase.Category.CreateCategoryUseCase;
-import com.booksms.book.core.domain.entity.Category;
-import com.booksms.book.interfaceLayer.DTO.Request.CategoryDTO;
-import com.booksms.book.interfaceLayer.service.category.ICreateCategoryService;
+import com.booksms.store.application.usecase.Category.CreateCategoryUseCase;
+import com.booksms.store.core.domain.entity.Category;
+import com.booksms.store.interfaceLayer.DTO.Request.CategoryDTO;
+import com.booksms.store.interfaceLayer.service.category.ICreateCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

@@ -12,4 +12,6 @@ public interface IJwtService {
     Boolean isExpiredToken(String token);
     List<SimpleGrantedAuthority> extractAuthorities(String token);
     String extractUsername(String token);
+
+    String generateRefreshToken(UserCredential userCredential, String[] permissionsByUserCredential);
 }

@@ -1,2 +1,13 @@
-package com.booksms.shipment.config;public class KafkaConfig {
+package com.booksms.shipment.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.support.converter.JsonMessageConverter;
+
+@Configuration
+public class KafkaConfig {
+    @Bean
+    public JsonMessageConverter jsonMessageConverter() {
+        return new JsonMessageConverter();
+    }
 }

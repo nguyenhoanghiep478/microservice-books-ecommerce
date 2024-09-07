@@ -1,21 +1,21 @@
-package com.booksms.book.interfaceLayer.service.book.impl;
+package com.booksms.store.interfaceLayer.service.book.impl;
 
-import com.booksms.book.core.domain.entity.Book;
-import com.booksms.book.core.domain.exception.BookNotFoundException;
-import com.booksms.book.core.domain.exception.InSufficientQuantityException;
-import com.booksms.book.infrastructure.JpaRepository.BookJpaRepository;
-import com.booksms.book.interfaceLayer.DTO.OrderItemDTO;
-import com.booksms.book.interfaceLayer.DTO.OrdersDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.ShortBookDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.UpdateQuantityDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.BookResponseDTO;
-import com.booksms.book.interfaceLayer.DTO.ResponseOrderCreated;
-import com.booksms.book.interfaceLayer.service.book.IBookService;
-import com.booksms.book.interfaceLayer.service.book.ICreateBookService;
-import com.booksms.book.interfaceLayer.service.book.IFindBookService;
-import com.booksms.book.interfaceLayer.service.book.IUpdateBookService;
-import com.booksms.book.web.mapper.GenericMapper;
+import com.booksms.store.core.domain.entity.Book;
+import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
+import com.booksms.store.core.domain.exception.InSufficientQuantityException;
+import com.booksms.store.infrastructure.JpaRepository.BookJpaRepository;
+import com.booksms.store.interfaceLayer.DTO.OrderItemDTO;
+import com.booksms.store.interfaceLayer.DTO.OrdersDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.ShortBookDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.UpdateQuantityDTO;
+import com.booksms.store.interfaceLayer.DTO.Response.BookResponseDTO;
+import com.booksms.store.interfaceLayer.DTO.ResponseOrderCreated;
+import com.booksms.store.interfaceLayer.service.book.IBookService;
+import com.booksms.store.interfaceLayer.service.book.ICreateBookService;
+import com.booksms.store.interfaceLayer.service.book.IFindBookService;
+import com.booksms.store.interfaceLayer.service.book.IUpdateBookService;
+import com.booksms.store.web.mapper.GenericMapper;
 import com.sun.jdi.InternalException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static com.booksms.book.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
+import static com.booksms.store.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
 
 @Service
 @RequiredArgsConstructor
@@ -137,6 +137,8 @@ public class BookService implements IBookService {
     @Override
     public BookResponseDTO findById(int id) throws IOException {
         Book book = findBookService.findById(id);
+
+
         BookResponseDTO bookResponseDTO = modelMapper.map(book, BookResponseDTO.class);
         bookResponseDTO.setImage(getImageBase64(book.getImage()));
         return bookResponseDTO;

@@ -1,4 +1,4 @@
-package com.booksms.marketing.interfaceLayer.dto;
+package com.bookms.order.interfaceLayer.DTO.Request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,13 +4,14 @@ import com.bookms.order.application.model.OrdersModel;
 import com.bookms.order.application.model.PaymentModel;
 import com.bookms.order.application.usecase.impl.CreateOrderUseCase;
 import com.bookms.order.application.usecase.impl.PreCreateOrderUseCase;
+import com.bookms.order.core.domain.Exception.InvalidToken;
+import com.bookms.order.core.domain.State.PaymentMethod;
 import com.bookms.order.infrastructure.serviceGateway.MarketingServiceGateway;
 import com.bookms.order.interfaceLayer.DTO.OrderDTO;
 import com.bookms.order.interfaceLayer.DTO.ResponseOrderCreated;
 import com.bookms.order.interfaceLayer.DTO.ResponsePayment;
 import com.bookms.order.interfaceLayer.service.ICreateOrderService;
 import com.bookms.order.interfaceLayer.service.redis.OrderRedisService;
-import com.booksms.marketing.core.domain.exception.InvalidToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,6 +19,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import static com.bookms.order.core.domain.Entity.Status.PROCESSING;
 import static com.bookms.order.core.domain.State.Concurency.USD;
 import static com.bookms.order.core.domain.State.StaticPayment.PAYPAL;
 
@@ -54,21 +56,14 @@ public class CreateOrderService implements ICreateOrderService {
              orderRedisService.saveOrder(ordersModel);
              return null;
         }
+
         if(!marketingServiceGateway.validateToken(Long.valueOf(request.getToken()))){
             throw new InvalidToken("invalid token");
         }
 
         ordersModel = orderRedisService.getOrder(request.getOrderNumber());
         createOrderUseCase.execute(ordersModel);
-        return PaymentModel.builder()
-                .orderNumber(ordersModel.getOrderNumber())
-                .customerId(ordersModel.getCustomerId())
-                .total(ordersModel.getTotalPrice().doubleValue())
-                .currency(USD.getConcurency())
-                .description(PAYPAL.description)
-                .intent(PAYPAL.intent)
-                .method(PAYPAL.method)
-                .build();
+        return getPaymentModel(ordersModel);
     }
 
     @Override
@@ -101,4 +96,24 @@ public class CreateOrderService implements ICreateOrderService {
         return orderWasPaid;
     }
 
+    @Override
+    public OrdersModel handleCodOrder(OrdersModel model) {
+        OrdersModel preCreateOrder = preCreateOrderUseCase.execute(model);
+        preCreateOrder.setPaymentMethod(PaymentMethod.COD.getValue());
+        preCreateOrder.setStatus(PROCESSING);
+        return createOrder(preCreateOrder);
+    }
+
+
+    private PaymentModel getPaymentModel(OrdersModel ordersModel) {
+        return PaymentModel.builder()
+                .orderNumber(ordersModel.getOrderNumber())
+                .customerId(ordersModel.getCustomerId())
+                .total(ordersModel.getTotalPrice().doubleValue())
+                .currency(USD.getConcurency())
+                .description(PAYPAL.description)
+                .intent(PAYPAL.intent)
+                .method(ordersModel.getPaymentMethod())
+                .build();
+    }
 }

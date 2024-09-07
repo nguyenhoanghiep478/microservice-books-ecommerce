@@ -1,12 +1,12 @@
-package com.booksms.book.application.usecase.Category;
+package com.booksms.store.application.usecase.Category;
 
-import com.booksms.book.application.model.CategorySearchCriteria;
-import com.booksms.book.application.usecase.BaseUseCase;
-import com.booksms.book.core.domain.entity.Book;
-import com.booksms.book.core.domain.entity.Category;
-import com.booksms.book.core.domain.exception.CategoryNotFoundException;
-import com.booksms.book.core.domain.exception.UpdateFailureException;
-import com.booksms.book.core.domain.repository.ICategoryRepository;
+import com.booksms.store.application.model.CategorySearchCriteria;
+import com.booksms.store.application.usecase.BaseUseCase;
+import com.booksms.store.core.domain.entity.Book;
+import com.booksms.store.core.domain.entity.Category;
+import com.booksms.store.core.domain.exception.CategoryNotFoundException;
+import com.booksms.store.core.domain.exception.UpdateFailureException;
+import com.booksms.store.core.domain.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

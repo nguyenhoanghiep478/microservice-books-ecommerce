@@ -33,4 +33,8 @@ public interface IOrderService {
     List<TopSaleDTO> getTopSale();
 
     List<ChartDTO> getChartOrderInWeek();
+
+    OrdersModel handleCodPaymentMethod(OrderDTO request);
+
+    List<OrderDTO> findByCustomerId(int id);
 }

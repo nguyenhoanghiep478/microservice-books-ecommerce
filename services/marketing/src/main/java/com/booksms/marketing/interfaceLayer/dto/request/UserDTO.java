@@ -1,4 +1,4 @@
-package com.booksms.authentication.interfaceLayer.DTO.Request;
+package com.booksms.marketing.interfaceLayer.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;

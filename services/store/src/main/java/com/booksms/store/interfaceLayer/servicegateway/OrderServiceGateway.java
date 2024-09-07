@@ -1,8 +1,8 @@
-package com.booksms.book.interfaceLayer.servicegateway;
+package com.booksms.store.interfaceLayer.servicegateway;
 
-import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.TopSalesDTO;
-import com.booksms.book.interfaceLayer.feignClient.OrderClient;
+import com.booksms.store.interfaceLayer.DTO.Response.ResponseDTO;
+import com.booksms.store.interfaceLayer.DTO.Response.TopSalesDTO;
+import com.booksms.store.interfaceLayer.feignClient.OrderClient;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;

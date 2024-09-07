@@ -1,4 +1,4 @@
-package com.booksms.book.interfaceLayer.DTO.Request;
+package com.booksms.store.interfaceLayer.DTO.Request;
 
 import lombok.Builder;
 import lombok.Data;

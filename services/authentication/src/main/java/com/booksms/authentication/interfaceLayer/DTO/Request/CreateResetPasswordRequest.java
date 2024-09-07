@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResetPasswordRequest {
+public class CreateResetPasswordRequest {
     @NotNull(message = "email is required for reset password")
     private String email;
     @NotNull(message = "id is required for reset password")
     private Integer id;
-
-    private String password;
 
 }

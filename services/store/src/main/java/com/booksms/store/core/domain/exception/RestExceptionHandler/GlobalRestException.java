@@ -1,6 +1,7 @@
-package com.booksms.book.core.domain.exception.RestExceptionHandler;
+package com.booksms.store.core.domain.exception.RestExceptionHandler;
 
-import com.booksms.book.core.domain.exception.*;
+import com.booksms.store.core.domain.exception.*;
+import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,7 +11,7 @@ import java.lang.Error;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.booksms.book.core.domain.exception.Error.*;
+import static com.booksms.store.core.domain.exception.Error.*;
 
 @ControllerAdvice
 public class GlobalRestException {

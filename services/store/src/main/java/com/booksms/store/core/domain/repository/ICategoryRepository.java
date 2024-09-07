@@ -1,6 +1,6 @@
-package com.booksms.book.core.domain.repository;
+package com.booksms.store.core.domain.repository;
 
-import com.booksms.book.core.domain.entity.Category;
+import com.booksms.store.core.domain.entity.Category;
 
 import java.util.List;
 import java.util.Optional;
