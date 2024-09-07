@@ -1,6 +1,6 @@
-package com.booksms.book.interfaceLayer.DTO;
+package com.booksms.store.interfaceLayer.DTO;
 
-import com.booksms.book.interfaceLayer.DTO.Request.OrderType;
+import com.booksms.store.interfaceLayer.DTO.Request.OrderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

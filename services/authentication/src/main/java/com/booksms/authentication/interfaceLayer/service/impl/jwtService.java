@@ -44,6 +44,19 @@ public class jwtService implements IJwtService {
     }
 
     @Override
+    public String generateRefreshToken(UserCredential userCredential, String[] permissionsByUserCredential) {
+        return Jwts.builder()
+                .setClaims(new HashMap<>())
+                .setSubject(userCredential.getEmail())
+                .claim("scope",permissionsByUserCredential)
+                .claim("id",userCredential.getId())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    @Override
     public Boolean isExpiredToken(String token) {
         return extractExpirationToken(token).before(new Date());
     }
@@ -73,7 +86,7 @@ public class jwtService implements IJwtService {
                 .claim("scope",permission)
                 .claim("id",user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 ))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

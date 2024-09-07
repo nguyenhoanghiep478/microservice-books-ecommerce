@@ -7,4 +7,5 @@ public interface IPaymentService {
     void saveToRedis(Long orderNumber, PaymentDTO paymentDTO);
 
     PaymentDTO save(Long orderNumber);
+    PaymentDTO save(PaymentDTO paymentDTO);
 }

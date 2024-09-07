@@ -1,10 +1,10 @@
-package com.booksms.book.interfaceLayer.service.category.impl;
+package com.booksms.store.interfaceLayer.service.category.impl;
 
-import com.booksms.book.application.model.CategorySearchCriteria;
-import com.booksms.book.application.usecase.Category.FindCategoriesUseCase;
-import com.booksms.book.application.usecase.Category.FindCategoryUseCase;
-import com.booksms.book.core.domain.entity.Category;
-import com.booksms.book.interfaceLayer.service.category.IFindCategoryService;
+import com.booksms.store.application.model.CategorySearchCriteria;
+import com.booksms.store.application.usecase.Category.FindCategoriesUseCase;
+import com.booksms.store.application.usecase.Category.FindCategoryUseCase;
+import com.booksms.store.core.domain.entity.Category;
+import com.booksms.store.interfaceLayer.service.category.IFindCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

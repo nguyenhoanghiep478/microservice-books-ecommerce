@@ -10,16 +10,18 @@ import com.booksms.authentication.application.usecase.UpdateUserUseCase;
 import com.booksms.authentication.core.entity.UserCredential;
 import com.booksms.authentication.core.exception.EmailExistedException;
 import com.booksms.authentication.core.exception.RegisterFailException;
-import com.booksms.authentication.interfaceLayer.DTO.Request.AuthRequest;
-import com.booksms.authentication.interfaceLayer.DTO.Request.NewUserRegister;
-import com.booksms.authentication.interfaceLayer.DTO.Request.UserDTO;
+import com.booksms.authentication.core.exception.UserNotFoundException;
+import com.booksms.authentication.interfaceLayer.DTO.Request.*;
 import com.booksms.authentication.interfaceLayer.DTO.Response.AuthResponse;
 import com.booksms.authentication.interfaceLayer.service.IAuthService;
 import com.booksms.authentication.interfaceLayer.service.IJwtService;
+import com.booksms.authentication.interfaceLayer.service.RedisService;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.InternalServerErrorException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseCookie;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +30,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.sasl.AuthenticationException;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +46,9 @@ public class AuthService  implements IAuthService {
     private final AuthenticationManager authenticationManager;
     private final FindUserUseCase findUserUseCase;
     private final KafkaTemplate<String, NewUserRegister> kafkaTemplate;
+    private final KafkaTemplate<String, UserDTO> kafkaResetPasswordTemplate;
     private final UpdateUserUseCase updateUserUseCase;
+    private final RedisService redisService;
 
     @Override
     public UserDTO register(UserDTO credential) {
@@ -82,7 +87,6 @@ public class AuthService  implements IAuthService {
 
     @Override
     public Boolean validateToken(String jwt) {
-
         String token = jwt.substring(7);
         log.info(token);
         String id = jwtService.isValidToken(token);
@@ -106,13 +110,29 @@ public class AuthService  implements IAuthService {
         ));
 
        if(authentication.isAuthenticated()){
+
           return AuthResponse.builder()
                   .accessToken(generateToken(request.getEmail()))
+                  .refreshToken(ResponseCookie.from("refresh-token",generateRefreshToken(request.getEmail()))
+                          .httpOnly(true)
+                          .secure(true)
+                          .path("/")
+                          .build())
                   .build();
        }else{
            throw new RuntimeException("Authentication Failed");
        }
 
+    }
+
+    private String generateRefreshToken(String email) {
+        UserCredential userCredential = findUserUseCase.execute(List.of(SearchUserCriteria.builder()
+                .key("email")
+                .operation(":")
+                .value(email)
+                .build())
+        ).get(0);
+        return jwtService.generateRefreshToken(userCredential,getPermissionsByUserCredential(userCredential));
     }
 
     @Override
@@ -129,6 +149,52 @@ public class AuthService  implements IAuthService {
                 .build();
 
         return modelMapper.map(findUserUseCase.execute(List.of(fieldId)).get(0), UserDTO.class);
+    }
+
+    @Override
+    public AuthResponse refershToken(String jwt, String refreshToken) throws AuthenticationException {
+        String token = jwt.substring(7);
+        log.info(token);
+        String id = jwtService.isValidToken(token);
+        if(id == null){
+           throw new AuthenticationException("invalid access token");
+        }
+
+        if(jwtService.isExpiredToken(refreshToken)){
+            throw new AuthenticationException("invalid refresh token");
+        }
+
+        String email = jwtService.extractUsername(refreshToken);
+        return AuthResponse.builder()
+                .accessToken(generateToken(email))
+                .refreshToken(ResponseCookie.from("refresh-token",generateRefreshToken(email))
+                        .httpOnly(true)
+                        .secure(true)
+                        .path("/")
+                        .build())
+                .build();
+    }
+
+    @Override
+    public void createResetPasswordRequest(CreateResetPasswordRequest request) {
+        UserDTO userDTO = findById(request.getId());
+        if(userDTO == null){
+            throw new UserNotFoundException(String.format("User with id %s not found", request.getId()));
+        }
+        if(!userDTO.getEmail().equals(request.getEmail())){
+            throw new BadRequestException("email address does not match");
+        }
+        redisService.setValue(userDTO.getId(),userDTO);
+        kafkaResetPasswordTemplate.send("ResetPassword",userDTO);
+
+    }
+
+    @Override
+    public void updatePassword(ResetPasswordRequest request) {
+        UserDTO userDTO = redisService.getValue(request.getId());
+        UserModel userModel = modelMapper.map(userDTO, UserModel.class);
+        userModel.setPassword(passwordEncoder.encode(request.getPassword()));
+        updateUserUseCase.execute(userModel);
     }
 
 

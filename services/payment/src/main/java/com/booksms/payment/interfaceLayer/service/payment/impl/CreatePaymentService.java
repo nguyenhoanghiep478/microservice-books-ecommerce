@@ -7,6 +7,7 @@ import com.booksms.payment.interfaceLayer.dto.PaymentDTO;
 import com.booksms.payment.interfaceLayer.service.RedisService.PaypalRedisService;
 import com.booksms.payment.interfaceLayer.service.payment.ICreatePaymentService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class CreatePaymentService implements ICreatePaymentService {
     private final CreatePaymentUseCase createPaymentUseCase;
     private final PaypalRedisService paypalRedisService;
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -31,5 +33,11 @@ public class CreatePaymentService implements ICreatePaymentService {
         PaymentModel result = createPaymentUseCase.execute(paymentModel);
         paypalRedisService.removePayment(paymentId);
         return result;
+    }
+
+    @Override
+    public PaymentModel save(PaymentDTO paymentDTO) {
+        PaymentModel paymentModel = modelMapper.map(paymentDTO, PaymentModel.class);
+        return createPaymentUseCase.execute(paymentModel);
     }
 }

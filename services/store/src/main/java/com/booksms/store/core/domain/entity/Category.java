@@ -1,4 +1,4 @@
-package com.booksms.book.core.domain.entity;
+package com.booksms.store.core.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

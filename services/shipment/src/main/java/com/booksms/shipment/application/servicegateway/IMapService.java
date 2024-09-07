@@ -1,4 +1,4 @@
-package com.booksms.shipment.infrastructure.serviceGateway;
+package com.booksms.shipment.application.servicegateway;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.booksms.book.application.usecase;
+package com.booksms.store.application.usecase;
 
 public class NoParam {
 }

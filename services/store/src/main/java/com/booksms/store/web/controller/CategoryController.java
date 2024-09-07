@@ -1,8 +1,8 @@
-package com.booksms.book.web.controller;
+package com.booksms.store.web.controller;
 
-import com.booksms.book.interfaceLayer.DTO.Request.CategoryDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
-import com.booksms.book.interfaceLayer.service.category.ICategoryService;
+import com.booksms.store.interfaceLayer.DTO.Request.CategoryDTO;
+import com.booksms.store.interfaceLayer.DTO.Response.ResponseDTO;
+import com.booksms.store.interfaceLayer.service.category.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

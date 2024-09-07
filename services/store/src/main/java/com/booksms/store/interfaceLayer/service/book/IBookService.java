@@ -1,9 +1,9 @@
-package com.booksms.book.interfaceLayer.service.book;
+package com.booksms.store.interfaceLayer.service.book;
 
-import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.ShortBookDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.UpdateQuantityDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.BookResponseDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.ShortBookDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.UpdateQuantityDTO;
+import com.booksms.store.interfaceLayer.DTO.Response.BookResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;

@@ -1,16 +1,13 @@
-package com.booksms.book.interfaceLayer.DTO.Response;
+package com.booksms.store.interfaceLayer.DTO.Response;
 
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -29,4 +26,5 @@ public class BookResponseDTO {
     private Boolean isInStock;
     private Date createdDate;
     private Date lastModifiedDate;
+    private Set<InventoryDTO> inventory;
 }

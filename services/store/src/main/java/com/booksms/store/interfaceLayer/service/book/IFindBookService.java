@@ -1,7 +1,6 @@
-package com.booksms.book.interfaceLayer.service.book;
+package com.booksms.store.interfaceLayer.service.book;
 
-import com.booksms.book.core.domain.entity.Book;
-import com.booksms.book.interfaceLayer.DTO.Response.BookResponseDTO;
+import com.booksms.store.core.domain.entity.Book;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

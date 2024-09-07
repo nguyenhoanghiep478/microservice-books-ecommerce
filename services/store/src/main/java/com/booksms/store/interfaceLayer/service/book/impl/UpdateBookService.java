@@ -1,15 +1,11 @@
-package com.booksms.book.interfaceLayer.service.book.impl;
+package com.booksms.store.interfaceLayer.service.book.impl;
 
-import com.booksms.book.application.model.BookModel;
-import com.booksms.book.application.usecase.Book.UpdateUseCase.UpdateBookUseCase;
-import com.booksms.book.core.domain.exception.InSufficientQuantityException;
-import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.OrderType;
-import com.booksms.book.interfaceLayer.DTO.Request.UpdateQuantityDTO;
-import com.booksms.book.core.domain.entity.Book;
-import com.booksms.book.core.domain.entity.Category;
-import com.booksms.book.interfaceLayer.service.book.IFindBookService;
-import com.booksms.book.interfaceLayer.service.book.IUpdateBookService;
+import com.booksms.store.application.model.BookModel;
+import com.booksms.store.application.usecase.Book.UpdateUseCase.UpdateBookUseCase;
+import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.UpdateQuantityDTO;
+import com.booksms.store.core.domain.entity.Book;
+import com.booksms.store.interfaceLayer.service.book.IUpdateBookService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

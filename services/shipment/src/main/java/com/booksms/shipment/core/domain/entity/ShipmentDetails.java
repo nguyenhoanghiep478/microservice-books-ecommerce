@@ -8,7 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Shipment extends AbstractEntity{
+public class ShipmentDetails extends AbstractEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -20,11 +20,22 @@ public class Shipment extends AbstractEntity{
     private Integer destinationAddressId;
 
     @Column(nullable = false)
+    private double distance;
+
+    @Column(nullable = false)
+    private Integer currentAddressId;
+
+    @Column(nullable = false)
+    private Double totalFee;
+
+    @Column(nullable = false)
     private String trackingNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false,name = "shipment_service_id")
+    private ShipmentService shipmentService;
 }

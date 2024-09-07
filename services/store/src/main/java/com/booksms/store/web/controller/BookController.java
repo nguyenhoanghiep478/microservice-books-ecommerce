@@ -1,10 +1,10 @@
-package com.booksms.book.web.controller;
+package com.booksms.store.web.controller;
 
-import com.booksms.book.core.domain.exception.UpdateFailureException;
-import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.UpdateQuantityDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
-import com.booksms.book.interfaceLayer.service.book.IBookService;
+import com.booksms.store.core.domain.exception.UpdateFailureException;
+import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.UpdateQuantityDTO;
+import com.booksms.store.interfaceLayer.DTO.Response.ResponseDTO;
+import com.booksms.store.interfaceLayer.service.book.IBookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

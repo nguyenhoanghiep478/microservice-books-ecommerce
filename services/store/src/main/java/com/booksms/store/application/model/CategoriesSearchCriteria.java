@@ -1,4 +1,4 @@
-package com.booksms.book.application.model;
+package com.booksms.store.application.model;
 
 public class CategoriesSearchCriteria {
 }

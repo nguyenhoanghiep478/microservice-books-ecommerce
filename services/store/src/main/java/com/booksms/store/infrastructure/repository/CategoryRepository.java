@@ -1,8 +1,8 @@
-package com.booksms.book.infrastructure.repository;
+package com.booksms.store.infrastructure.repository;
 
-import com.booksms.book.core.domain.entity.Category;
-import com.booksms.book.core.domain.repository.ICategoryRepository;
-import com.booksms.book.infrastructure.JpaRepository.CategoryJpaRepository;
+import com.booksms.store.core.domain.entity.Category;
+import com.booksms.store.core.domain.repository.ICategoryRepository;
+import com.booksms.store.infrastructure.JpaRepository.CategoryJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

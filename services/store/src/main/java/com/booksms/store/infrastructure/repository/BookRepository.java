@@ -1,9 +1,9 @@
-package com.booksms.book.infrastructure.repository;
+package com.booksms.store.infrastructure.repository;
 
-import com.booksms.book.application.model.BooksSearchCriteria;
-import com.booksms.book.core.domain.entity.Book;
-import com.booksms.book.core.domain.repository.IBookRepository;
-import com.booksms.book.infrastructure.JpaRepository.BookJpaRepository;
+import com.booksms.store.application.model.BooksSearchCriteria;
+import com.booksms.store.core.domain.entity.Book;
+import com.booksms.store.core.domain.repository.IBookRepository;
+import com.booksms.store.infrastructure.JpaRepository.BookJpaRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;

@@ -11,8 +11,8 @@
 	<groupId>com.booksms</groupId>
 	<artifactId>store</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>book</name>
-	<description>book</description>
+	<name>store</name>
+	<description>store</description>
 	<url/>
 	<licenses>
 		<license/>

@@ -1,10 +1,10 @@
-package com.booksms.book.web.anonymous;
+package com.booksms.store.web.anonymous;
 
-import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.book.interfaceLayer.DTO.Request.ShortBookDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.BookResponseDTO;
-import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
-import com.booksms.book.interfaceLayer.service.book.IBookService;
+import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.ShortBookDTO;
+import com.booksms.store.interfaceLayer.DTO.Response.BookResponseDTO;
+import com.booksms.store.interfaceLayer.DTO.Response.ResponseDTO;
+import com.booksms.store.interfaceLayer.service.book.IBookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

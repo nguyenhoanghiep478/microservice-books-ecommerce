@@ -2,6 +2,7 @@ package com.bookms.order.application.model;
 
 import com.bookms.order.core.domain.Entity.OrderType;
 import com.bookms.order.core.domain.Entity.Status;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,4 +26,7 @@ public class OrdersModel {
     private String paymentMethod;
     private List<BookModel> bookModels;
     private Integer paymentId;
+    private Integer shipmentServiceId;
+    private Integer originAddressId;
+    private Integer destinationAddressId;
 }

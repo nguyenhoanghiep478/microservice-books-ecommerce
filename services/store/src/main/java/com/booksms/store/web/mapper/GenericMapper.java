@@ -1,4 +1,4 @@
-package com.booksms.book.web.mapper;
+package com.booksms.store.web.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

@@ -1,12 +1,12 @@
-package com.booksms.book.interfaceLayer.service.book.impl;
+package com.booksms.store.interfaceLayer.service.book.impl;
 
-import com.booksms.book.application.usecase.Book.CreateHandlerUseCase.CreateBookHandlerUseCase;
-import com.booksms.book.core.domain.entity.Book;
-import com.booksms.book.core.domain.entity.Category;
-import com.booksms.book.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.book.interfaceLayer.service.book.ICreateBookService;
-import com.booksms.book.interfaceLayer.service.category.IFindCategoryService;
-import com.booksms.book.web.mapper.GenericMapper;
+import com.booksms.store.application.usecase.Book.CreateHandlerUseCase.CreateBookHandlerUseCase;
+import com.booksms.store.core.domain.entity.Book;
+import com.booksms.store.core.domain.entity.Category;
+import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
+import com.booksms.store.interfaceLayer.service.book.ICreateBookService;
+import com.booksms.store.interfaceLayer.service.category.IFindCategoryService;
+import com.booksms.store.web.mapper.GenericMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import static com.booksms.book.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
+import static com.booksms.store.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
 
 @Service
 @RequiredArgsConstructor

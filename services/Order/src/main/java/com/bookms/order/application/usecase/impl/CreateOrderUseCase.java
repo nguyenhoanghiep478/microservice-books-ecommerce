@@ -6,6 +6,7 @@ import com.bookms.order.core.domain.Entity.OrderType;
 import com.bookms.order.core.domain.Entity.Orders;
 import com.bookms.order.core.domain.Entity.Status;
 import com.bookms.order.core.domain.Exception.OrderExistException;
+import com.bookms.order.core.domain.State.PaymentMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ public class CreateOrderUseCase implements BaseUseCase<OrdersModel,OrdersModel>{
     @Transactional(rollbackFor = Exception.class)
     public OrdersModel execute(OrdersModel orderModel) throws OrderExistException {
         Orders result = null;
-        if(orderModel.getOrderType() == OrderType.SELL && orderModel.getStatus() != Status.PENDING) {
+        if(orderModel.getOrderType() == OrderType.SELL && orderModel.getStatus() != Status.PENDING && !orderModel.getPaymentMethod().equals(PaymentMethod.COD.getValue()) ) {
             result = updateOrderUseCase.execute(orderModel);
             return orderModel;
         }

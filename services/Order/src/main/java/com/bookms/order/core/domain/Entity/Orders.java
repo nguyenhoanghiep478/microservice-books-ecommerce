@@ -35,6 +35,9 @@ public class Orders extends AbstractEntity{
     @Column(nullable=false)
     private Integer paymentId;
 
+    @Column(nullable=false)
+    private Integer shipmentId;
+
     @PrePersist
     public void prePersist(){
         if(this.status == null){

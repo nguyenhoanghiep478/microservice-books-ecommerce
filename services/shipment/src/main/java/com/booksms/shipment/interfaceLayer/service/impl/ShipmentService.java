@@ -1,19 +1,26 @@
-package com.booksms.shipment.infrastructure.serviceGateway.impl;
+package com.booksms.shipment.interfaceLayer.service.impl;
 
+import com.booksms.shipment.application.model.ShipmentModel;
 import com.booksms.shipment.core.domain.state.ShipmentMethod;
-import com.booksms.shipment.infrastructure.serviceGateway.IMapService;
-import com.booksms.shipment.infrastructure.serviceGateway.IShipmentService;
+import com.booksms.shipment.application.servicegateway.IMapService;
+import com.booksms.shipment.interfaceLayer.service.ICreateShipmentService;
+import com.booksms.shipment.interfaceLayer.service.IFindShipmentService;
+import com.booksms.shipment.interfaceLayer.service.IShipmentService;
 import com.booksms.shipment.interfaceLayer.dto.response.ShipmentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class ShipmentService implements IShipmentService {
     private final IMapService mapService;
-
+    private final IFindShipmentService findShipmentService;
+    private final ICreateShipmentService createShipmentService;
 
     @Override
     public ShipmentResponse getShipment(String from, String to, ShipmentMethod shipmentMethod) {
@@ -29,6 +36,17 @@ public class ShipmentService implements IShipmentService {
                 .shipmentMethod(shipmentMethod)
                 .build();
 
+    }
+
+    @Override
+    public List<ShipmentResponse> getAllShipmentServices() {
+        return List.of();
+    }
+
+    @Override
+    @KafkaListener(id = "consumer-order-created",topics = "order-created")
+    public ShipmentModel createShipment(ShipmentModel shipmentModel) {
+        return createShipmentService.createShipment(shipmentModel);
     }
 
 

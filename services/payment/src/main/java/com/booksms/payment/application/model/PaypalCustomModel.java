@@ -1,10 +1,14 @@
 package com.booksms.payment.application.model;
 
+import com.booksms.payment.core.domain.StaticVar.StaticVar;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import static com.booksms.payment.core.domain.StaticVar.StaticVar.FAILURE_URL;
+import static com.booksms.payment.core.domain.StaticVar.StaticVar.SUCCESS_URL;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +28,7 @@ public class PaypalCustomModel {
 
     public void setOrderNumber(Long orderNumber) {
         this.orderNumber = orderNumber;
-        this.cancelUrl = "http://localhost:5558/api/v1/payment/paypal/cancel?orderNumber=" + orderNumber;
-        this.returnUrl = "http://localhost:5558/api/v1/payment/paypal/success?orderNumber=" + orderNumber;
+        this.cancelUrl = FAILURE_URL + orderNumber;
+        this.returnUrl = SUCCESS_URL + orderNumber;
     }
 }

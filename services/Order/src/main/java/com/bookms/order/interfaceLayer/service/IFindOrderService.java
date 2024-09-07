@@ -1,5 +1,6 @@
 package com.bookms.order.interfaceLayer.service;
 
+import com.bookms.order.application.model.OrdersModel;
 import com.bookms.order.core.domain.Entity.Orders;
 import com.bookms.order.interfaceLayer.DTO.ChartDTO;
 import com.bookms.order.interfaceLayer.DTO.TopSaleDTO;
@@ -16,4 +17,6 @@ public interface IFindOrderService {
     List<TopSaleDTO> getTopSales();
 
     List<ChartDTO> getChartOrderInWeek();
+
+    List<Orders> findByCustomerId(int id);
 }

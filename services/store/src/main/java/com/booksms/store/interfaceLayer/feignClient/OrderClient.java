@@ -1,6 +1,6 @@
-package com.booksms.book.interfaceLayer.feignClient;
+package com.booksms.store.interfaceLayer.feignClient;
 
-import com.booksms.book.interfaceLayer.DTO.Response.ResponseDTO;
+import com.booksms.store.interfaceLayer.DTO.Response.ResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

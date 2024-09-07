@@ -1,4 +1,4 @@
-package com.booksms.book.core.domain.exception;
+package com.booksms.store.core.domain.exception;
 
 public class CategoryNotFoundException extends RuntimeException {
     public CategoryNotFoundException(String message) {

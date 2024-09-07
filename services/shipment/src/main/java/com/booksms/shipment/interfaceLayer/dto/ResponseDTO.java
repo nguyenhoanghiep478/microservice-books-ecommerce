@@ -1,4 +1,4 @@
-package com.booksms.payment.interfaceLayer.dto;
+package com.booksms.shipment.interfaceLayer.dto;
 
 import lombok.Builder;
 import lombok.Data;

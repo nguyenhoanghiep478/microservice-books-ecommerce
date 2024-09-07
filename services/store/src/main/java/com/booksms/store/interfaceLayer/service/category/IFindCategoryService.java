@@ -1,6 +1,6 @@
-package com.booksms.book.interfaceLayer.service.category;
+package com.booksms.store.interfaceLayer.service.category;
 
-import com.booksms.book.core.domain.entity.Category;
+import com.booksms.store.core.domain.entity.Category;
 
 import java.util.List;
 
