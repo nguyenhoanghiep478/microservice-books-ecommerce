@@ -2,6 +2,7 @@ package com.booksms.authentication.interfaceLayer.DTO.Request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,6 @@ public class UserDTO {
     private String email;
     private String phone;
     private String address;
-    @JsonIgnore
+    @NotNull(message = "password is required")
     private String password;
 }

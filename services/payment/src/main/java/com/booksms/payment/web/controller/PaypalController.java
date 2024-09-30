@@ -109,7 +109,7 @@ public class PaypalController {
     ){
         ResponsePayment responsePayment = orderRedisService.getValue(orderNumber);
         responsePayment.setStatus(Status.CANCELLED);
-
+        log.info("process cancel payment");
         kafkaTemplate.send("payment-response",responsePayment);
 
         orderRedisService.deleteValue(orderNumber);

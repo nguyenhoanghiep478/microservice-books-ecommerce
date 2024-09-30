@@ -1,9 +1,10 @@
 package com.booksms.authentication.web.anonymous;
 
+import com.booksms.authentication.interfaceLayer.DTO.Request.ResetPasswordRequest;
 import com.booksms.authentication.interfaceLayer.DTO.Request.AuthRequest;
+import com.booksms.authentication.interfaceLayer.DTO.Request.CreateResetPasswordRequest;
 import com.booksms.authentication.interfaceLayer.DTO.Response.AuthResponse;
 import com.booksms.authentication.interfaceLayer.DTO.Response.ResponseDTO;
-import com.booksms.authentication.interfaceLayer.DTO.Request.UserDTO;
 import com.booksms.authentication.interfaceLayer.service.IAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ public class AuthAnonymousController {
     private final IAuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid UserDTO userDTO) {
-        var user = authService.register(userDTO);
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
+        var user = authService.register(request);
         return ResponseEntity.ok(ResponseDTO.builder()
                         .status(200)
                         .message(Collections.singletonList("register user successful"))

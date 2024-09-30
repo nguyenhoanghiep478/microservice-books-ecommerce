@@ -1,0 +1,18 @@
+.formSection {
+    padding-right: 1rem; 
+}
+
+.imageSection {
+    padding-left: 1rem; 
+    border-left: 3px solid #ddd; 
+    height: 100%;
+}
+
+.card-body {
+    display: flex;
+    align-items: stretch; 
+}
+.titleStyle {
+    text-align : 'center';
+    margin-bottom: '2rem'; 
+};

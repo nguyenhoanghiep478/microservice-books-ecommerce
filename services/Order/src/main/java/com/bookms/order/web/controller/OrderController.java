@@ -6,6 +6,7 @@ import com.bookms.order.core.domain.Entity.OrderType;
 import com.bookms.order.core.domain.Entity.Status;
 import com.bookms.order.infrastructure.FeignClient.PaymentClient;
 import com.bookms.order.interfaceLayer.DTO.*;
+import com.bookms.order.interfaceLayer.DTO.Request.StockInOrderDTO;
 import com.bookms.order.interfaceLayer.service.IOrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,17 @@ public class OrderController {
                 .message(Arrays.asList("get top sales successful"))
                 .status(200)
                 .result(topSaleDTOS)
+                .build()
+        );
+    }
+
+    @GetMapping("/get-stock-in-order")
+    public ResponseEntity<?> GetStockInOrder() {
+        List<StockInOrderDTO> response = service.getStockInOrder();
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message(Arrays.asList("get stock in order successful"))
+                .status(200)
+                .result(response)
                 .build()
         );
     }

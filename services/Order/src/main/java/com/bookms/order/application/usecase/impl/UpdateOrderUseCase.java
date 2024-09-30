@@ -21,6 +21,7 @@ public class UpdateOrderUseCase implements BaseUseCase<Orders, OrdersModel> {
 
         orders.setPaymentId(ordersModel.getPaymentId());
         orders.setPaymentMethod(ordersModel.getPaymentMethod());
+        orders.setShipmentId(ordersModel.getShipmentId());
         orders.setStatus(ordersModel.getStatus());
 
         return repository.save(orders);

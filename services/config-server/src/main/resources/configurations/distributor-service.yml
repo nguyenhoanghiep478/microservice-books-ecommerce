@@ -19,4 +19,4 @@ spring:
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
 server:
-  port: 5558
+  port: 5561

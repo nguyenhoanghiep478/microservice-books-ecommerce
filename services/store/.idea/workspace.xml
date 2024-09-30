@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ad8fe355-f303-4b18-951c-32105b405152" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/Exception/EmailExistException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/Exception/ErrorCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/Exception/ExceptionResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/Exception/IErrorException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/Exception/PhoneExistException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/Exception/PhoneNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/Exception/UserNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/ExceptionHandler/GlobalRestExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/dto/CustomerRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/repository/impl/CustomerDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Config/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Start/Controller/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/Start/Controller/CustomerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/common/repository/ICustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/repository/ICustomerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/common/service/ICustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/common/service/ICustomerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/common/service/impl/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/common/service/impl/CustomerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/dto/Address.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/Entity/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/CustomerRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/CustomerResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../customer/src/main/java/com/booksms/customer/Customer/data/dto/CustomerResponse.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2jrbmWKczUxJ8KLRwaTRwWWujey" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ad8fe355-f303-4b18-951c-32105b405152" name="Changes" comment="" />
+      <created>1722148304387</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1722148304387</updated>
+      <workItem from="1722148305432" duration="3000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

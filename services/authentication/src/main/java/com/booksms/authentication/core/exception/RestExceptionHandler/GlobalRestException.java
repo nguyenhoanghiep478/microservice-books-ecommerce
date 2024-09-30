@@ -1,6 +1,7 @@
 package com.booksms.authentication.core.exception.RestExceptionHandler;
 
 import com.booksms.authentication.core.exception.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,19 +16,29 @@ import static com.booksms.authentication.core.exception.Error.*;
 public class GlobalRestException {
     private final String contentType= "application/json";
 
-    @ExceptionHandler(EmailExistedException.class)
-    public ResponseEntity<ExceptionDTO> bookNotFoundException(EmailExistedException e) {
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ExceptionDTO> handleCustomException(RuntimeException e) {
+        int code = 500;
+        String description = "An unexpected error occurred";
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        if (e instanceof CustomException customException) {
+            status = customException.getHttpStatus();
+            code = customException.getCode();
+            description = customException.getDescription();
+        }
+
         return ResponseEntity
-                .status(EMAIL_EXISTED.getHttpStatus())
+                .status(status)
                 .header("Content-Type", contentType)
                 .body(
-                       ExceptionDTO.builder()
-                               .code(EMAIL_EXISTED.getCode())
-                               .errorDescription(EMAIL_EXISTED.getDescription())
-                               .error(e.getMessage())
-                               .build()
+                        ExceptionDTO.builder()
+                                .code(code)
+                                .errorDescription(description)
+                                .error(e.getMessage())
+                                .build()
                 );
-
     }
 
 

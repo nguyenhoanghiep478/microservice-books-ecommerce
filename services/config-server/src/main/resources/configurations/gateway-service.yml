@@ -36,7 +36,24 @@ spring:
           uri: lb:http://BOOK-SERVICE
           predicates:
             - Path=/api/v1/book/**
-#            - Path=/api/v1/category/**
+          filters:
+            - AuthenticationFilter
+        - id: inventory-service
+          uri: lb:http://STORE-SERVICE
+          predicates:
+            - Path=/api/v1/inventory/**
+          filters:
+            - AuthenticationFilter
+        - id: marketing-service
+          uri: lb:http://MARKETING-SERVICE
+          predicates:
+            - Path=/api/v1/marketing/**
+          filters:
+            - AuthenticationFilter
+        - id: shipment-service
+          uri: lb:http://SHIPMENT-SERVICE
+          predicates:
+            - Path=/api/v1/shipment/**
           filters:
             - AuthenticationFilter
         - id: category-service
@@ -49,6 +66,12 @@ spring:
           uri: lb:http://AUTHENTICATION-SERVICE
           predicates:
             - Path=/api/v1/auth/**
+          filters:
+            - AuthenticationFilter
+        - id: role-service
+          uri: lb:http://AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/api/v1/role/**
           filters:
             - AuthenticationFilter
   main:

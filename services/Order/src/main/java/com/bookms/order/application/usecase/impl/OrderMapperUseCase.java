@@ -19,6 +19,7 @@ public class OrderMapperUseCase {
         orders.setOrderNumber(ordersModel.getOrderNumber());
         orders.setPaymentId(ordersModel.getPaymentId());
         orders.setOrderItems(ordersModel.getOrderItems().stream().map(item -> toOrderItems(item,orders)).toList());
+        orders.setShipmentId(ordersModel.getShipmentId());
         return orders;
     }
 

@@ -27,7 +27,7 @@ public class CreateOrderUseCase implements BaseUseCase<OrdersModel,OrdersModel>{
         }
         Orders orders = orderMapperUseCase.toOrders(orderModel);
 
-        if(orders.getOrderType() == OrderType.BUY && orders.getPaymentId() == null){
+        if(orders.getOrderType() == OrderType.BUY ){
             result = createBuyOrderUseCase.execute(orders);
         }
         else{

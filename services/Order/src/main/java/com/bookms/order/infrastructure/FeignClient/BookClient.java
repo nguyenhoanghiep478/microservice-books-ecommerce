@@ -4,6 +4,8 @@ import com.bookms.order.interfaceLayer.DTO.Request.UpdateQuantityDTO;
 import com.bookms.order.interfaceLayer.DTO.ResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -16,4 +18,7 @@ public interface BookClient {
 
     @PostMapping("/update-quantity")
     ResponseEntity<ResponseDTO> updateQuantity(@RequestBody UpdateQuantityDTO updateQuantityDTO);
+
+    @GetMapping("/get-profit-by-ids/{inventoryId}/{ids}")
+    ResponseEntity<ResponseDTO> GetProfitByIds(@PathVariable Integer inventoryId, @PathVariable Set<Integer> ids);
 }

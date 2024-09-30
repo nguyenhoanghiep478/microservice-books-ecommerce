@@ -3,6 +3,7 @@ package com.booksms.authentication.core.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -21,8 +22,9 @@ public class UserCredential extends AbstractEntity{
     private String phone;
     private String address;
     private String password;
-    private boolean isVerified;
+    private Boolean isVerified;
     private boolean isFirstVisit;
+    private Boolean isBlocked;
     @ManyToMany
     @JoinTable(
             name = "user_role",
@@ -30,5 +32,12 @@ public class UserCredential extends AbstractEntity{
             inverseJoinColumns = @JoinColumn(name= "role_id")
     )
     private Set<Role> roles;
+
+    public Set<Role> getRoles() {
+        if(roles == null){
+            roles = new HashSet<>();
+        }
+        return roles;
+    }
 
 }

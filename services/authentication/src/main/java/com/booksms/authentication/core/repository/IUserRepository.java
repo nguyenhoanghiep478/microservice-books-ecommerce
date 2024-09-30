@@ -18,4 +18,6 @@ public interface IUserRepository {
     List<UserCredential> search(List<SearchUserCriteria> criteriaList);
 
     List<UserCredential> findAll();
+
+    UserCredential findById(Integer id);
 }

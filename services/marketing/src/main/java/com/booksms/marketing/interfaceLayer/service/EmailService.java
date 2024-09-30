@@ -85,7 +85,7 @@ public class EmailService implements IEmailService {
 
     @KafkaListener(id = "consumer-pre-order-create", topics = "pre-create-order")
     private void sendTokenForOrder(OrdersModel ordersModel) {
-        CustomerModel customer = customerService.getCustomerById(ordersModel.getCustomerId());
+            CustomerModel customer = customerService.getCustomerById(ordersModel.getCustomerId());
         Long generateVerifyToken =generateToken();
         Context context = getOrderContext(ordersModel);
         context.setVariable("token",generateVerifyToken);

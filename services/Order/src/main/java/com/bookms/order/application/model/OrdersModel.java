@@ -2,12 +2,14 @@ package com.bookms.order.application.model;
 
 import com.bookms.order.core.domain.Entity.OrderType;
 import com.bookms.order.core.domain.Entity.Status;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -25,4 +27,12 @@ public class OrdersModel {
     private String paymentMethod;
     private List<BookModel> bookModels;
     private Integer paymentId;
+    private Integer shipmentServiceId;
+    private Integer originAddressId;
+    private String destinationAddress;
+    private Integer shipmentId;
+    private double distance;
+    private double shipmentFee;
+    private double inventoryId;
+    private Timestamp createdDate;
 }

@@ -4,6 +4,7 @@ import com.bookms.order.application.model.OrdersModel;
 import com.bookms.order.application.model.PaymentModel;
 import com.bookms.order.interfaceLayer.DTO.ChartDTO;
 import com.bookms.order.interfaceLayer.DTO.OrderDTO;
+import com.bookms.order.interfaceLayer.DTO.Request.StockInOrderDTO;
 import com.bookms.order.interfaceLayer.DTO.ResponsePayment;
 import com.bookms.order.interfaceLayer.DTO.TopSaleDTO;
 
@@ -33,4 +34,10 @@ public interface IOrderService {
     List<TopSaleDTO> getTopSale();
 
     List<ChartDTO> getChartOrderInWeek();
+
+    OrdersModel handleCodPaymentMethod(OrderDTO request);
+
+    List<OrderDTO> findByCustomerId(int id);
+
+    List<StockInOrderDTO> getStockInOrder();
 }

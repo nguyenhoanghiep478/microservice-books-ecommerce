@@ -15,4 +15,5 @@ import java.math.BigDecimal;
 public class ChartDTO {
     private DateOfWeek dateOfWeek;
     private BigDecimal totalPrice;
+    private BigDecimal profit;
 }

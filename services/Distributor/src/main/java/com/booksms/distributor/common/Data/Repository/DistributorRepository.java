@@ -1,6 +1,6 @@
 package com.booksms.distributor.common.Data.Repository;
 
-import com.booksms.distributor.common.Data.Entity.Distributor;
+import com.booksms.distributor.core.domain.entity.Distributor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

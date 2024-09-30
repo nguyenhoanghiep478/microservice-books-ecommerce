@@ -1,0 +1,42 @@
+.container {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    margin-top: 80px;
+}
+
+.infoContainer {
+    flex: 1;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: black;
+}
+
+.imgContainer {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.details {
+    flex: 3;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.details p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: black;
+}
+
+.details strong {
+    color: black;
+}

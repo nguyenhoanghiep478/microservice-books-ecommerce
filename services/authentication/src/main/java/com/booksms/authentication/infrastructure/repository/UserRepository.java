@@ -3,6 +3,7 @@ package com.booksms.authentication.infrastructure.repository;
 import com.booksms.authentication.application.model.SearchUserCriteria;
 import com.booksms.authentication.core.entity.Permission;
 import com.booksms.authentication.core.entity.UserCredential;
+import com.booksms.authentication.core.exception.UserNotFoundException;
 import com.booksms.authentication.core.repository.IUserRepository;
 import com.booksms.authentication.infrastructure.jpaRepository.UserCredentialRepository;
 import jakarta.persistence.EntityManager;
@@ -17,11 +18,15 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-@RequiredArgsConstructor
-public class UserRepository implements IUserRepository {
+public class UserRepository extends AbstractRepository<UserCredential> implements IUserRepository {
     private final UserCredentialRepository repository;
     @PersistenceContext
     private EntityManager entityManager;
+    UserRepository(Class<UserCredential> entityClass, UserCredentialRepository repository) {
+        super(entityClass);
+        this.repository = repository;
+    }
+
     @Override
     public Optional<UserCredential> findByEmail(String email) {
         return repository.findByEmail(email);
@@ -43,31 +48,18 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public List<UserCredential> search(List<SearchUserCriteria> criteriaList) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<UserCredential> query = builder.createQuery(UserCredential.class);
-        Root<UserCredential> root = query.from(UserCredential.class);
-        List<Predicate> predicates = new ArrayList<>();
-        for(SearchUserCriteria criteria : criteriaList) {
-            switch (criteria.getOperation()){
-                case ":":
-                    predicates.add(builder.equal(root.get(criteria.getKey()), criteria.getValue()));
-                    break;
-                case ">":
-                    predicates.add(builder.greaterThan(root.get(criteria.getKey()), criteria.getValue()));
-                    break;
-                case "<":
-                    predicates.add(builder.lessThan(root.get(criteria.getKey()), criteria.getValue()));
-                case "LIKE":
-                    predicates.add(builder.like(root.get(criteria.getKey()), "%" + criteria.getValue() + "%"));
-                    break;
-            }
-        }
-        query.where(predicates.toArray(new Predicate[0]));
-        return entityManager.createQuery(query).getResultList();
+       return abstractSearch(criteriaList);
     }
 
     @Override
     public List<UserCredential> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public UserCredential findById(Integer id) {
+        return repository.findById(id).orElseThrow(
+                () -> new UserNotFoundException(String.format("User with id %s not found",id))
+        );
     }
 }

@@ -18,18 +18,12 @@ public class MarketingController {
 
 
     @PostMapping("/send-mail")
-    public String sendMail(@RequestBody EmailRequest emailRequest){
+    public String sendMail(@RequestBody EmailRequest emailRequest) {
         emailService.sendSimpleMail(EmailRequest.builder()
-                        .attachment(null)
-                        .recipient(emailRequest.getRecipient())
-                        .message(emailRequest.getMessage())
+                .attachment(null)
+                .recipient(emailRequest.getRecipient())
+                .message(emailRequest.getMessage())
                 .build());
         return "send success";
-    }
-
-    @PostMapping("/verify-token")
-    public ResponseEntity<?> validateToken(@RequestBody VerifyUserDTO verifyUserDTO){
-        String message=  emailService.verifyToken(verifyUserDTO);
-        return ResponseEntity.ok(message);
     }
 }
