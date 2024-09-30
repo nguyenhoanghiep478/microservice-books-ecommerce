@@ -1,7 +1,8 @@
 package com.booksms.shipment.infrastructure.feignclient;
 
-import com.booksms.shipment.interfaceLayer.dto.ResponseDTO;
+
 import com.booksms.shipment.interfaceLayer.dto.request.CreateAddressDTO;
+import com.booksms.shipment.interfaceLayer.dto.response.ResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

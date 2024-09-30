@@ -2,8 +2,8 @@ package com.booksms.shipment.infrastructure.serviceGateway.impl;
 
 import com.booksms.shipment.infrastructure.feignclient.AddressClient;
 import com.booksms.shipment.infrastructure.serviceGateway.IAddressService;
-import com.booksms.shipment.interfaceLayer.dto.ResponseDTO;
 import com.booksms.shipment.interfaceLayer.dto.request.CreateAddressDTO;
+import com.booksms.shipment.interfaceLayer.dto.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;

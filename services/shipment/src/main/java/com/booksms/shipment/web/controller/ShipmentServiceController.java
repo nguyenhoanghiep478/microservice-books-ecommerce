@@ -1,6 +1,6 @@
 package com.booksms.shipment.web.controller;
 
-import com.booksms.shipment.interfaceLayer.dto.ResponseDTO;
+import com.booksms.shipment.interfaceLayer.dto.response.ResponseDTO;
 import com.booksms.shipment.interfaceLayer.dto.response.ShipmentResponse;
 import com.booksms.shipment.interfaceLayer.service.IShipmentService;
 import lombok.RequiredArgsConstructor;
