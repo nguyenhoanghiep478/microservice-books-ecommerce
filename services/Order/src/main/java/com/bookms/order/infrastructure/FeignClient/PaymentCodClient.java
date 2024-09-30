@@ -6,9 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-@FeignClient(name = "payment-service",url = "http://localhost:5558/api/v1/payment/paypal")
-public interface PaymentClient {
+@FeignClient(name = "payment-cod-service",url = "http://localhost:5558/api/v1/payment/cod")
+public interface PaymentCodClient {
     @PostMapping("/create")
-    ResponseEntity<ResponseDTO> create(@RequestBody PaymentModel payment);
+    ResponseEntity<ResponseDTO> createByCod(@RequestBody PaymentModel payment);
 }

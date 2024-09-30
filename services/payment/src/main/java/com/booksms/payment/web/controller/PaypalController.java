@@ -28,7 +28,6 @@ import java.util.List;
 @Slf4j
 public class PaypalController {
     private final PaypalGateway paypalGateway;
-    private final OrderClient orderClient;
     private final OrderRedisService orderRedisService;
     private final IPaymentService paymentService;
     private final KafkaTemplate<String,ResponsePayment> kafkaTemplate;

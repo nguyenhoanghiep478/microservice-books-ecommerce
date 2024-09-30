@@ -5,6 +5,7 @@ import com.bookms.order.core.domain.Entity.Orders;
 import com.bookms.order.core.domain.Entity.Status;
 import com.bookms.order.core.domain.Exception.PriceNotTheSameException;
 import com.bookms.order.core.domain.Repository.IOrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +14,9 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
+@RequiredArgsConstructor
 public class CreateBuyOrderUseCase implements BaseUseCase<Orders,Orders> {
-    private IOrderRepository orderRepository;
+    private final IOrderRepository orderRepository;
 
     @Transactional(rollbackFor = Exception.class)
     public Orders execute(Orders orders) {

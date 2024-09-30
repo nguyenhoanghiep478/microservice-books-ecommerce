@@ -8,4 +8,5 @@ public interface ICreatePaymentService {
    void saveToRedis(Long id, PaymentDTO paymentDTO);
 
    PaymentModel save(Long orderNumber);
+   PaymentModel save(PaymentDTO paymentDTO);
 }

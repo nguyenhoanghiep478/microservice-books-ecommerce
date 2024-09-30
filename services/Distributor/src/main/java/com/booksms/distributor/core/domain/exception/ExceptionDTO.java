@@ -1,4 +1,6 @@
+
 package com.booksms.distributor.core.domain.exception;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

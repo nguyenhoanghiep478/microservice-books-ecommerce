@@ -15,4 +15,6 @@ public interface ICreateOrderService {
     void completeOrder(Long key);
 
     OrdersModel handleOrderWasPaid(ResponsePayment responsePayment);
+
+    OrdersModel handleCodOrder(OrdersModel model);
 }

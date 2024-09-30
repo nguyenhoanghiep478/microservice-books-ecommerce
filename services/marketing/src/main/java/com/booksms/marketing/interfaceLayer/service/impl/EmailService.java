@@ -1,4 +1,4 @@
-package com.booksms.marketing.interfaceLayer.service;
+package com.booksms.marketing.interfaceLayer.service.impl;
 
 import com.booksms.marketing.application.model.CustomerModel;
 import com.booksms.marketing.application.model.OrdersModel;
@@ -8,6 +8,9 @@ import com.booksms.marketing.interfaceLayer.dto.ResponseOrderCreated;
 import com.booksms.marketing.interfaceLayer.dto.VerifyUserDTO;
 import com.booksms.marketing.interfaceLayer.dto.request.EmailRequest;
 import com.booksms.marketing.interfaceLayer.dto.request.NewUserRegister;
+import com.booksms.marketing.interfaceLayer.dto.request.UserDTO;
+import com.booksms.marketing.interfaceLayer.service.IEmailService;
+import com.booksms.marketing.interfaceLayer.service.RedisNewUserService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +92,7 @@ public class EmailService implements IEmailService {
         Long generateVerifyToken =generateToken();
         Context context = getOrderContext(ordersModel);
         context.setVariable("token",generateVerifyToken);
+        log.info(String.valueOf(generateVerifyToken));
         sendMimeMessageMail("preOrderTemplate", customer.getEmail(), context, "Verify order");
 
         Instant now = Instant.now();
@@ -97,6 +101,17 @@ public class EmailService implements IEmailService {
 
         Duration oneHours = Duration.ofHours(1);
         this.redisNewUserService.save(generateVerifyToken, request, oneHours);
+
+        log.info(this.redisNewUserService.get(generateVerifyToken).toString());
+    }
+    @KafkaListener(id = "consumer-reset-password",topics = "ResetPassword")
+    private void sendResetPasswordURL(UserDTO userDTO){
+        log.info(userDTO.toString());
+        Context context = new Context();
+        context.setVariable("username",userDTO.getFirstName()+" "+userDTO.getLastName());
+        context.setVariable("url","http://"+userDTO.getEmail());
+        context.setVariable("id",userDTO.getId());
+        sendMimeMessageMail("reset-password", userDTO.getEmail(), context, "Reset password");
     }
 
     protected void sendMimeMessageMail(String template, String receipt, Context context, String subject) {
@@ -143,7 +158,8 @@ public class EmailService implements IEmailService {
 
     @Override
     public String verifyToken(VerifyUserDTO verifyDTO) {
-        NewUserRegister verify = redisNewUserService.get(verifyDTO.getToken());
+        log.info(verifyDTO.toString());
+        NewUserRegister verify = this.redisNewUserService.get(verifyDTO.getToken());
         if (verify == null) {
             throw new InvalidToken("invalid token , please try again");
         }

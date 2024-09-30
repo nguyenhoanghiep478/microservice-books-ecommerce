@@ -33,7 +33,7 @@ spring:
           filters:
             - AuthenticationFilter
         - id: book-service
-          uri: lb:http://BOOK-SERVICE
+          uri: lb:http://STORE-SERVICE
           predicates:
             - Path=/api/v1/book/**
           filters:
@@ -57,7 +57,7 @@ spring:
           filters:
             - AuthenticationFilter
         - id: category-service
-          uri: lb:http://BOOK-SERVICE
+          uri: lb:http://STORE-SERVICE
           predicates:
              - Path=/api/v1/category/**
           filters:

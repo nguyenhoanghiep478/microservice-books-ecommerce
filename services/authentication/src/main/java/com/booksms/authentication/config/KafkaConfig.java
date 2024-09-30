@@ -14,6 +14,11 @@ public class KafkaConfig {
     }
 
     @Bean
+    public NewTopic resetPasswordTopic() {
+        return new NewTopic("ResetPassword", 2, (short) 1);
+    }
+
+    @Bean
     public NewTopic response() {
         return new NewTopic("UserRegisterResponse", 2, (short) 1);
     }

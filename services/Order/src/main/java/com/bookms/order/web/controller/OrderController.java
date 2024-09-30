@@ -2,49 +2,60 @@ package com.bookms.order.web.controller;
 
 import com.bookms.order.application.model.OrdersModel;
 import com.bookms.order.application.model.PaymentModel;
-import com.bookms.order.core.domain.Entity.OrderType;
-import com.bookms.order.core.domain.Entity.Status;
-import com.bookms.order.infrastructure.FeignClient.PaymentClient;
+import com.bookms.order.application.servicegateway.IPaymentServiceGateway;
+import com.bookms.order.infrastructure.FeignClient.PaymentPaypalClient;
 import com.bookms.order.interfaceLayer.DTO.*;
 import com.bookms.order.interfaceLayer.DTO.Request.StockInOrderDTO;
 import com.bookms.order.interfaceLayer.service.IOrderService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.bookms.order.core.domain.State.PaymentMethod.COD;
+import static com.bookms.order.core.domain.State.PaymentMethod.PAYPAL;
 
 @RestController
 @RequestMapping("/api/v1/order")
 @RequiredArgsConstructor
 public class OrderController {
     private final IOrderService service;
-    private final PaymentClient paymentClient;
+    private final IPaymentServiceGateway paymentServiceGateway;
 
     @GetMapping("/get-all")
     public ResponseEntity<?> GetAll() {
         //get listDTO
         List<OrderDTO> results = service.findAll();
         return ResponseEntity.ok(ResponseDTO.builder()
-                .message(Arrays.asList("getAllBookSuccessful"))
+                .message(Arrays.asList("getAllOrderSuccessful"))
                 .status(201)
                 //return list dto
                 .result(results)
                 .build());
     }
+
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity<?> GetById(@PathVariable int id) {
         //get bookDTO
         OrderDTO result = service.findById(id);
         return ResponseEntity.ok(ResponseDTO.builder()
-                .message(Arrays.asList("getBookByIdSuccessful"))
+                .message(Arrays.asList("getOrderByIdSuccessful"))
                 .status(200)
                 .result(result)
+                .build()
+        );
+    }
+
+    @GetMapping("/get-by-customer-id/{id}")
+    public ResponseEntity<?> GetByCustomerId(@PathVariable int id) {
+        List<OrderDTO> response = service.findByCustomerId(id);
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message(Arrays.asList("getOrderByCustomerIdSuccessful"))
+                .status(200)
+                .result(response)
                 .build()
         );
     }
@@ -83,7 +94,7 @@ public class OrderController {
 
     @GetMapping("/get-latest/{amount}")
     public ResponseEntity<?> GetFiveLatest(@PathVariable int amount) {
-       List<OrderDTO> latest = service.findLatest(amount);
+        List<OrderDTO> latest = service.findLatest(amount);
 
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("getOrderSuccessful"))
@@ -108,7 +119,7 @@ public class OrderController {
     @PostMapping("/pay-order")
     public ResponseEntity<?> PayOrder(@RequestBody OrderDTO request) {
         PaymentModel paymentModel = service.prePay(request);
-        if(paymentModel == null){
+        if (paymentModel == null) {
             return ResponseEntity.ok(ResponseDTO.builder()
                     .message(Arrays.asList("sent token"))
                     .status(200)
@@ -116,9 +127,22 @@ public class OrderController {
                     .build()
             );
         }
-        return paymentClient.create(paymentModel);
+        return paymentServiceGateway.create(paymentModel);
     }
 
+
+    @PostMapping("/pay-order-cod")
+    public ResponseEntity<?> PayOrderCod(@RequestBody OrderDTO request) {
+        OrdersModel ordersModel = service.handleCodPaymentMethod(request);
+
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message(Arrays.asList("sent token"))
+                .status(200)
+                .result(ordersModel)
+                .build()
+        );
+
+    }
 
 
     @PostMapping("/success-payment")
