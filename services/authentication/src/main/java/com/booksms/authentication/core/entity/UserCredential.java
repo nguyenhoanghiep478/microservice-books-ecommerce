@@ -22,6 +22,7 @@ public class UserCredential extends AbstractEntity{
     private String phone;
     private String address;
     private String password;
+    private String image;
     private Boolean isVerified;
     private boolean isFirstVisit;
     private Boolean isBlocked;

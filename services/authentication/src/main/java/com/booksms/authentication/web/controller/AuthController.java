@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.sasl.AuthenticationException;
 import java.util.Collections;
@@ -25,7 +26,12 @@ public class AuthController {
     private final IAuthService authService;
 
     @PutMapping("/update-user")
-    public ResponseEntity<ResponseDTO> updateUser(@RequestBody UpdateUserRequest request) {
+    public ResponseEntity<ResponseDTO> updateUser(
+            @ModelAttribute UpdateUserRequest request, // Nhận các field không phải file
+            @RequestPart(value = "image", required = false) MultipartFile image // Nhận file từ form-data
+    ) {
+        // Truyền file vào authService nếu cần
+        request.setImage(image);
         UserResponseDTO response = authService.updateUser(request);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .status(200)

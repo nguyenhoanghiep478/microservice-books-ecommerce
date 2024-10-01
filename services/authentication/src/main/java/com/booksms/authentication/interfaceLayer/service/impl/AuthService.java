@@ -138,6 +138,7 @@ public class AuthService  implements IAuthService {
                           .secure(true)
                           .path("/")
                           .build())
+                  .profile(findById(userCredential.getId()))
                   .build();
        }else{
            throw new RuntimeException("Authentication Failed");
@@ -168,7 +169,9 @@ public class AuthService  implements IAuthService {
                 .value(String.valueOf(id))
                 .build();
 
-        return modelMapper.map(findUserUseCase.execute(List.of(fieldId)).get(0), UserDTO.class);
+        UserDTO user = modelMapper.map(findUserUseCase.execute(List.of(fieldId)).get(0), UserDTO.class);
+        user.setPassword(null);
+        return user;
     }
 
     @Override

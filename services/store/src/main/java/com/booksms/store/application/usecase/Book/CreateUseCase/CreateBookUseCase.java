@@ -1,15 +1,11 @@
 package com.booksms.store.application.usecase.Book.CreateUseCase;
 
 import com.booksms.store.application.model.BookModel;
-import com.booksms.store.application.model.CategorySearchCriteria;
 import com.booksms.store.application.model.SearchCriteria;
 import com.booksms.store.application.usecase.BaseUseCase;
-import com.booksms.store.application.usecase.Category.FindCategoryUseCase;
-import com.booksms.store.application.usecase.inventory.FindInventoryUseCase;
+import com.booksms.store.application.usecase.category.FindCategoryUseCase;
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.core.domain.entity.Category;
-import com.booksms.store.core.domain.entity.Inventory;
-import com.booksms.store.core.domain.entity.InventoryBook;
 import com.booksms.store.core.domain.exception.CreateFailureException;
 import com.booksms.store.core.domain.repository.IBookRepository;
 import jakarta.validation.constraints.NotNull;
@@ -18,13 +14,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class CreateBookUseCase implements BaseUseCase<Book, BookModel>{
+public class CreateBookUseCase implements BaseUseCase<Book,BookModel> {
     private final IBookRepository bookRepository;
     private final FindCategoryUseCase findCategoryUseCase;
 
@@ -40,9 +34,11 @@ public class CreateBookUseCase implements BaseUseCase<Book, BookModel>{
 
     @Transactional(rollbackFor = Exception.class)
     public Book execute(Book book,Integer categoryId){
-        Category category = findCategoryUseCase.execute(CategorySearchCriteria.builder()
-                .id(categoryId)
-                .build());
+        Category category = findCategoryUseCase.execute(List.of(SearchCriteria.builder()
+                .key("id")
+                .operation(":")
+                .value(categoryId)
+                .build())).get(0);
         book.setCategory(category);
 
         Book createdBook = bookRepository.save(book).orElseThrow(

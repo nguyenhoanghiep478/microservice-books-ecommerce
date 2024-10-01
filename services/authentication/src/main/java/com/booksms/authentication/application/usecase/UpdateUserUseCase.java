@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -45,6 +46,12 @@ public class UpdateUserUseCase implements BaseUsecase<UserModel, UserModel> {
         if(userModel.getPhone() != null){
             credential.setPhone(userModel.getPhone());
         }
+        if(userModel.getFirstName() != null){
+            credential.setFirstName(userModel.getFirstName());
+        }
+        if(userModel.getLastName() != null){
+            credential.setLastName(userModel.getLastName());
+        }
         if(userModel.getAddress() != null){
             credential.setAddress(userModel.getAddress());
         }
@@ -67,6 +74,7 @@ public class UpdateUserUseCase implements BaseUsecase<UserModel, UserModel> {
                     .value(userModel.getRoleName())
                     .build();
            Role role = findRoleUseCase.execute(List.of(searchUserCriteria)).get(0);
+            credential.setRoles(new HashSet<>());
             credential.getRoles().add(role);
         }
         return credential;

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -22,4 +23,5 @@ public class UserDTO {
     private String address;
     @NotNull(message = "password is required")
     private String password;
+    private MultipartFile image;
 }

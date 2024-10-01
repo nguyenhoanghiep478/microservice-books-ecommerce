@@ -1,7 +1,6 @@
 package com.booksms.store.application.usecase.Book.FindUseCase.impl;
 
 import com.booksms.store.application.model.SearchCriteria;
-import com.booksms.store.application.usecase.BaseUseCase;
 import com.booksms.store.application.usecase.Book.FindUseCase.IFindBookUseCase;
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class FindBooksUseCase implements BaseUseCase<List<Book>, List<SearchCriteria>>, IFindBookUseCase {
+public class FindBooksUseCase implements IFindBookUseCase {
     private final IBookRepository bookRepository;
 
     @Override

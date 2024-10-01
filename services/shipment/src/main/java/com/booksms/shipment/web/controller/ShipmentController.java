@@ -45,7 +45,7 @@ public class ShipmentController {
     }
 
     @PutMapping("/update-by-id/{id}")
-    public ResponseEntity<?> updateShipmentDetail(@PathVariable("id") Integer id , UpdateShipmentDetailDTO request){
+    public ResponseEntity<?> updateShipmentDetail(@PathVariable("id") Integer id ,@RequestBody UpdateShipmentDetailDTO request){
         ShipmentDetailsResponse response = shipmentService.updateById(id,request);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .status(200)

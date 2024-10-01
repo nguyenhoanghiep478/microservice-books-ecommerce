@@ -2,7 +2,6 @@ package com.booksms.store.application.usecase.Book.UpdateUseCase;
 
 import com.booksms.store.application.model.BookModel;
 import com.booksms.store.application.model.CategorySearchCriteria;
-import com.booksms.store.application.usecase.BaseUseCase;
 import com.booksms.store.application.usecase.Category.FindCategoryUseCase;
 import com.booksms.store.application.usecase.state.UtilsUseCase;
 import com.booksms.store.core.domain.entity.Book;
@@ -16,19 +15,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Objects;
 
 import static com.booksms.store.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
 
 @Component
 @RequiredArgsConstructor
-public class UpdateBookUseCase implements BaseUseCase<Book, BookModel> {
+public class UpdateBookUseCase {
     private final IBookRepository bookRepository;
     private final FindCategoryUseCase findCategoryUseCase;
     private final UtilsUseCase utilsUseCase;

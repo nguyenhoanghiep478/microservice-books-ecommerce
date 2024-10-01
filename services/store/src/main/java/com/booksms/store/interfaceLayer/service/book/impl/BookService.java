@@ -2,7 +2,7 @@ package com.booksms.store.interfaceLayer.service.book.impl;
 
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.core.domain.entity.InventoryBook;
-import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
+import com.booksms.store.core.domain.exception.BookException.BookNotFoundException;
 import com.booksms.store.infrastructure.JpaRepository.BookJpaRepository;
 import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
 import com.booksms.store.interfaceLayer.DTO.Request.ShortBookDTO;
@@ -14,9 +14,7 @@ import com.booksms.store.interfaceLayer.service.book.ICreateBookService;
 import com.booksms.store.interfaceLayer.service.book.IFindBookService;
 import com.booksms.store.interfaceLayer.service.book.IUpdateBookService;
 import com.booksms.store.interfaceLayer.service.state.image.IImageService;
-import com.booksms.store.web.mapper.GenericMapper;
 import com.sun.jdi.InternalException;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +28,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class BookService implements IBookService {
-    private final GenericMapper<Book, BookRequestDTO, BookRequestDTO> bookMapper;
-    private final GenericMapper<Book, ShortBookDTO, ShortBookDTO> shortBookMapper;
+
     private final IImageService imageService;
     private final IFindBookService findBookService;
     private final ICreateBookService createBookService;
@@ -45,14 +42,14 @@ public class BookService implements IBookService {
     public BookRequestDTO insert(BookRequestDTO request) throws IOException {
         Book book = createBookService.insert(request);
 
-        return bookMapper.toResponse(book, BookRequestDTO.class);
+        return modelMapper.map(book, BookRequestDTO.class);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BookRequestDTO updateById(int id, BookRequestDTO request) throws IOException {
         Book book = updateBookService.updateById(id, request);
-        return bookMapper.toResponse(book, BookRequestDTO.class);
+        return modelMapper.map(book, BookRequestDTO.class);
     }
 
     @Override
@@ -64,7 +61,7 @@ public class BookService implements IBookService {
         }
         book.get().setIsInStock(!book.get().getIsInStock());
         Book afterUpdate = bookJpaRepository.save(book.get());
-        BookRequestDTO bookRequestDTO = bookMapper.toResponse(afterUpdate, BookRequestDTO.class);
+        BookRequestDTO bookRequestDTO = modelMapper.map(afterUpdate, BookRequestDTO.class);
         if (bookRequestDTO == null) {
             throw new InternalException("some thing wrong , please try again");
         }
@@ -75,7 +72,7 @@ public class BookService implements IBookService {
     @Transactional(rollbackFor = Exception.class)
     public BookRequestDTO updateQuantityById(int id, SellProductDTO request) throws IOException {
         Book book = updateBookService.updateQuantityById(id, request);
-        return bookMapper.toResponse(book, BookRequestDTO.class);
+        return modelMapper.map(book, BookRequestDTO.class);
     }
 
 
@@ -83,25 +80,31 @@ public class BookService implements IBookService {
     @Override
     public List<BookRequestDTO> findByCategoryIdAndName(int categoryId, String name) {
         List<Book> books = findBookService.findByCategoryIdAndName(categoryId, name);
-        return bookMapper.toListResponse(books, BookRequestDTO.class);
+        return books.stream().map(
+              book ->  modelMapper.map(book, BookRequestDTO.class)
+        ).toList();
     }
 
     @Override
     public List<BookRequestDTO> findByCategoryId(int categoryId) {
         List<Book> books = findBookService.findByCategoryId(categoryId);
-        return bookMapper.toListResponse(books, BookRequestDTO.class);
+        return books.stream().map(
+                book ->  modelMapper.map(book, BookRequestDTO.class)
+        ).toList();
     }
 
     @Override
     public List<BookRequestDTO> findAllLikeNameAndCategoryId(int categoryId, String name) {
         List<Book> books = findBookService.findByCategoryIdAndName(categoryId, name);
-        return bookMapper.toListResponse(books, BookRequestDTO.class);
+        return books.stream().map(
+                book ->  modelMapper.map(book, BookRequestDTO.class)
+        ).toList();
     }
 
     @Override
     public BookRequestDTO findByName(String name) {
         Book book = findBookService.findByName(name);
-        return bookMapper.toResponse(book, BookRequestDTO.class);
+        return modelMapper.map(book, BookRequestDTO.class);
     }
 
     @Override
@@ -127,7 +130,9 @@ public class BookService implements IBookService {
     @Override
     public List<ShortBookDTO> findAllInStock() {
         List<Book> books = findBookService.findAllInStock();
-        return shortBookMapper.toListResponse(books, ShortBookDTO.class);
+        return books.stream().map(
+                book ->  modelMapper.map(book, ShortBookDTO.class)
+        ).toList();
     }
 
     @Override
@@ -139,7 +144,10 @@ public class BookService implements IBookService {
 
     @Override
     public List<BookRequestDTO> findAll(Pageable pageable) {
-        return bookMapper.toListResponse(findBookService.findAll(pageable), BookRequestDTO.class);
+        List<Book> books = findBookService.findAll(pageable);
+        return books.stream().map(
+                book ->  modelMapper.map(book, BookRequestDTO.class)
+        ).toList();
     }
 
     @Override
