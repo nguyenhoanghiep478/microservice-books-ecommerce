@@ -1,15 +1,12 @@
 package com.booksms.store.application.usecase.Book.UpdateUseCase;
 
 import com.booksms.store.application.model.BookModel;
-import com.booksms.store.application.model.CategorySearchCriteria;
 import com.booksms.store.application.model.SearchCriteria;
-import com.booksms.store.application.usecase.Category.FindCategoryUseCase;
 import com.booksms.store.application.usecase.category.FindCategoryUseCase;
 import com.booksms.store.application.usecase.state.UtilsUseCase;
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.core.domain.entity.Category;
 import com.booksms.store.core.domain.exception.BookException.BookNotFoundException;
-import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
 import com.booksms.store.core.domain.exception.InSufficientQuantityException;
 import com.booksms.store.core.domain.exception.UpdateFailureException;
 import com.booksms.store.core.domain.repository.IBookRepository;
@@ -21,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
-
-import static com.booksms.store.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
 
 @Component
 @RequiredArgsConstructor

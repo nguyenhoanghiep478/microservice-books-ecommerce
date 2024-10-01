@@ -1,3 +1,13 @@
+
+CREATE TABLE if not exists address (
+                                       id SERIAL PRIMARY KEY,
+                                       street VARCHAR(255) NOT NULL,
+                                       city VARCHAR(255) NOT NULL,
+                                       state VARCHAR(255) NOT NULL,
+                                       zip VARCHAR(20),
+                                       created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                       last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE IF NOT EXISTS inventory(
                            id SERIAL PRIMARY KEY,
                            name VARCHAR(255),
@@ -21,15 +31,7 @@ alter table inventory add
     REFERENCES address(id)
     ON DELETE CASCADE;
 
-CREATE TABLE if not exists address (
-                         id SERIAL PRIMARY KEY,
-                         street VARCHAR(255) NOT NULL,
-                         city VARCHAR(255) NOT NULL,
-                         state VARCHAR(255) NOT NULL,
-                         zip VARCHAR(20),
-                         created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                         last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+
 
 alter table book drop column if exists available_quantity
 

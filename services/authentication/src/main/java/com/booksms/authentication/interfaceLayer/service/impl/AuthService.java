@@ -16,6 +16,7 @@ import com.booksms.authentication.interfaceLayer.DTO.Response.UserResponseDTO;
 import com.booksms.authentication.interfaceLayer.service.IAuthService;
 import com.booksms.authentication.interfaceLayer.service.IJwtService;
 import com.booksms.authentication.interfaceLayer.service.RedisService;
+import com.booksms.authentication.interfaceLayer.service.state.image.IImageService;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.InternalServerErrorException;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.sasl.AuthenticationException;
+import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 @Service
@@ -49,6 +52,7 @@ public class AuthService  implements IAuthService {
     private final KafkaTemplate<String, UserDTO> kafkaResetPasswordTemplate;
     private final UpdateUserUseCase updateUserUseCase;
     private final RedisService redisService;
+    private final IImageService imageService;
 
     @Override
     public UserDTO register(RegisterRequest request) {
@@ -108,7 +112,7 @@ public class AuthService  implements IAuthService {
        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()
-        ));
+       ));
 
        if(authentication.isAuthenticated()){
             UserCredential userCredential = findUserUseCase.execute(List.of(SearchUserCriteria.builder()
@@ -168,8 +172,15 @@ public class AuthService  implements IAuthService {
                 .operation(":")
                 .value(String.valueOf(id))
                 .build();
-
-        UserDTO user = modelMapper.map(findUserUseCase.execute(List.of(fieldId)).get(0), UserDTO.class);
+        UserCredential entity = findUserUseCase.execute(List.of(fieldId)).get(0);
+        UserDTO user = modelMapper.map(entity, UserDTO.class);
+        if(user.getImage() != null){
+            try {
+                user.setImage(imageService.getImageBase64(entity.getImage()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         user.setPassword(null);
         return user;
     }
@@ -200,13 +211,22 @@ public class AuthService  implements IAuthService {
 
     @Override
     public void createResetPasswordRequest(CreateResetPasswordRequest request) {
-        UserDTO userDTO = findById(request.getId());
+        UserCredential entity =findUserUseCase.execute(List.of(
+                SearchUserCriteria.builder()
+                        .key("email")
+                        .operation(":")
+                        .value(request.getEmail())
+                        .build()
+        )).get(0);
+        UserDTO userDTO = modelMapper.map(entity, UserDTO.class);
         if(userDTO == null){
-            throw new UserNotFoundException(String.format("User with id %s not found", request.getId()));
+            throw new UserNotFoundException(String.format("User with email %s not found", request.getEmail()));
         }
         if(!userDTO.getEmail().equals(request.getEmail())){
             throw new BadRequestException("email address does not match");
         }
+        Random random = new Random();
+        userDTO.setId(random.nextInt());
         redisService.setValue(userDTO.getId(),userDTO);
         kafkaResetPasswordTemplate.send("ResetPassword",userDTO);
 
@@ -215,6 +235,8 @@ public class AuthService  implements IAuthService {
     @Override
     public void updatePassword(ResetPasswordRequest request) {
         UserDTO userDTO = redisService.getValue(request.getId());
+        userDTO.setImage(null);
+        userDTO.setId(null);
         UserModel userModel = modelMapper.map(userDTO, UserModel.class);
         userModel.setPassword(passwordEncoder.encode(request.getPassword()));
         updateUserUseCase.execute(userModel);
@@ -238,9 +260,12 @@ public class AuthService  implements IAuthService {
     }
 
     @Override
-    public UserResponseDTO updateUser(UpdateUserRequest request) {
-        UserModel userCredential = updateUserUseCase.execute(modelMapper.map(request,UserModel.class));
-        return modelMapper.map(userCredential, UserResponseDTO.class);
+    public UserResponseDTO updateUser(UpdateUserRequest request) throws IOException {
+        String imagePath = imageService.handleImageToPath(request.getImage(),request.getEmail());
+        UserModel userCredential = modelMapper.map(request,UserModel.class);
+        userCredential.setImage(imagePath);
+         updateUserUseCase.execute(userCredential);
+        return map(List.of(modelMapper.map(userCredential, UserCredential.class))).get(0);
     }
 
     @Override
@@ -257,6 +282,13 @@ public class AuthService  implements IAuthService {
                     UserResponseDTO response =  modelMapper.map(user,UserResponseDTO.class);
                     if(user.getRoles() != null || !user.getRoles().isEmpty()){
                         response.setRoleName(user.getRoles().stream().map(Role::getName).toList());
+                    }
+                    if(user.getImage() != null){
+                        try {
+                            response.setImage(imageService.getImageBase64(user.getImage()));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     return response;
                 })

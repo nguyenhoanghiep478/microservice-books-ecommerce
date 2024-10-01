@@ -10,14 +10,11 @@ import com.booksms.store.application.usecase.inventory.CreateUseCase.CreateQuant
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.core.domain.entity.Inventory;
 import com.booksms.store.core.domain.entity.InventoryBook;
-import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
 import com.booksms.store.core.domain.exception.InventoryNotExistedException;
 import com.booksms.store.core.domain.repository.IInventoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor

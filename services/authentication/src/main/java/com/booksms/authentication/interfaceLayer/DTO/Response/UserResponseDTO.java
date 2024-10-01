@@ -25,7 +25,7 @@ public class UserResponseDTO {
     @JsonIgnore
     private String password;
     private Date createdDate;
-
+    private String image;
     private List<String> roleName;
     private Boolean isBlocked;
 }

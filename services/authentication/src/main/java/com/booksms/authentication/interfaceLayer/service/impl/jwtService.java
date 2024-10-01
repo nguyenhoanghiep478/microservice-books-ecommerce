@@ -86,7 +86,7 @@ public class jwtService implements IJwtService {
                 .claim("scope",permission)
                 .claim("id",user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 ))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

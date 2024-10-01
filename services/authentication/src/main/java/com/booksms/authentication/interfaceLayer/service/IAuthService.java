@@ -5,6 +5,7 @@ import com.booksms.authentication.interfaceLayer.DTO.Response.AuthResponse;
 import com.booksms.authentication.interfaceLayer.DTO.Response.UserResponseDTO;
 
 import javax.security.sasl.AuthenticationException;
+import java.io.IOException;
 import java.util.List;
 
 public interface IAuthService {
@@ -26,7 +27,7 @@ public interface IAuthService {
 
     UserResponseDTO getById(int id);
 
-    UserResponseDTO updateUser(UpdateUserRequest userDTO);
+    UserResponseDTO updateUser(UpdateUserRequest userDTO) throws IOException;
 
     void deleteUserById(Integer id,Boolean state);
 }

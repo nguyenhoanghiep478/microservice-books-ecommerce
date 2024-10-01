@@ -21,4 +21,5 @@ public class UserModel {
     private Boolean isFirstVisit;
     private Boolean isBlocked;
     private String roleName;
+    private String image;
 }

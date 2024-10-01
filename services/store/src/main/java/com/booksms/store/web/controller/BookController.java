@@ -2,7 +2,8 @@ package com.booksms.store.web.controller;
 
 import com.booksms.store.core.domain.exception.UpdateFailureException;
 import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
-import com.booksms.store.interfaceLayer.DTO.Request.UpdateQuantityDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.SellProductDTO;
+import com.booksms.store.interfaceLayer.DTO.Response.ProfitDTO;
 import com.booksms.store.interfaceLayer.DTO.Response.ResponseDTO;
 import com.booksms.store.interfaceLayer.service.book.IBookService;
 import jakarta.validation.Valid;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/book")
@@ -101,13 +103,19 @@ public class BookController {
                         .build());
     }
     @PostMapping("/update-quantity")
-    public ResponseEntity<?> UpdateBookQuantity( @RequestBody @Valid UpdateQuantityDTO request) throws IOException {
+    public ResponseEntity<?> UpdateBookQuantity( @RequestBody @Valid SellProductDTO request) throws IOException {
         BookRequestDTO bookRequestDTO = service.updateQuantityById(request.getId(), request);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .message(Arrays.asList("updateBookQuantitySuccessful"))
                 .status(200)
                 .result(bookRequestDTO)
                 .build());
+    }
+
+    @GetMapping({"/get-profit-by-ids/{inventoryId}/{ids}"})
+    public ResponseEntity<?> GetProfitByIds(@PathVariable Integer inventoryId, @PathVariable Set<Integer> ids) {
+        List<ProfitDTO> response = this.service.getProfitByIds(inventoryId, ids);
+        return ResponseEntity.ok(ResponseDTO.builder().message(Arrays.asList("getBookByIdSuccessful")).status(200).result(response).build());
     }
 
     @PutMapping("/update-book-by-id/{id}")

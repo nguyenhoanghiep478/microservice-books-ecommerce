@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.sasl.AuthenticationException;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class AuthController {
     public ResponseEntity<ResponseDTO> updateUser(
             @ModelAttribute UpdateUserRequest request, // Nhận các field không phải file
             @RequestPart(value = "image", required = false) MultipartFile image // Nhận file từ form-data
-    ) {
+    ) throws IOException {
         // Truyền file vào authService nếu cần
         request.setImage(image);
         UserResponseDTO response = authService.updateUser(request);
@@ -39,6 +40,17 @@ public class AuthController {
                 .result(response)
                 .build());
     }
+
+    @PutMapping("/update-user-by-admin")
+    public ResponseEntity<ResponseDTO> updateUserByAdmin(@RequestBody UpdateUserRequest request) throws IOException {
+        UserResponseDTO response = authService.updateUser(request);
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .status(200)
+                .message(Collections.singletonList("update successful"))
+                .result(response)
+                .build());
+    }
+
     @DeleteMapping("/delete/{id}/{state}")
     public ResponseEntity<ResponseDTO> deleteUser(@PathVariable("id") Integer id, @PathVariable("state") Boolean state) {
         authService.deleteUserById(id,state);

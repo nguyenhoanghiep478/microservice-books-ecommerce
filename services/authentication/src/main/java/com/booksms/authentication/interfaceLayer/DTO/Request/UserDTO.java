@@ -23,5 +23,5 @@ public class UserDTO {
     private String address;
     @NotNull(message = "password is required")
     private String password;
-    private MultipartFile image;
+    private String image;
 }

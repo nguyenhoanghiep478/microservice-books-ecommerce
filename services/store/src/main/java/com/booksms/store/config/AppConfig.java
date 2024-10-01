@@ -1,9 +1,6 @@
 package com.booksms.store.config;
 
-import com.booksms.store.core.domain.entity.Address;
-import com.booksms.store.core.domain.entity.Book;
-import com.booksms.store.core.domain.entity.Inventory;
-import com.booksms.store.core.domain.entity.InventoryBook;
+import com.booksms.store.core.domain.entity.*;
 import com.booksms.store.infrastructure.JpaRepository.BookJpaRepository;
 import com.booksms.store.infrastructure.JpaRepository.InventoryJpaRepository;
 import com.booksms.store.infrastructure.repository.AbstractRepository;
@@ -49,4 +46,8 @@ public class AppConfig {
         return Address.class;
     }
 
+    @Bean
+    public Class<Category> categoryClass() {
+        return Category.class;
+    }
 }

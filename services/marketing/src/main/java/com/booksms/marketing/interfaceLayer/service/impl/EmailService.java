@@ -109,7 +109,8 @@ public class EmailService implements IEmailService {
         log.info(userDTO.toString());
         Context context = new Context();
         context.setVariable("username",userDTO.getFirstName()+" "+userDTO.getLastName());
-        context.setVariable("url","http://"+userDTO.getEmail());
+        String resetPasswordUrl = "http://localhost:3000/resetPassword?id=" + userDTO.getId();
+        context.setVariable("url", resetPasswordUrl);
         context.setVariable("id",userDTO.getId());
         sendMimeMessageMail("reset-password", userDTO.getEmail(), context, "Reset password");
     }

@@ -46,6 +46,9 @@ public class UpdateUserUseCase implements BaseUsecase<UserModel, UserModel> {
         if(userModel.getPhone() != null){
             credential.setPhone(userModel.getPhone());
         }
+        if(userModel.getImage() != null){
+            credential.setImage(userModel.getImage());
+        }
         if(userModel.getFirstName() != null){
             credential.setFirstName(userModel.getFirstName());
         }

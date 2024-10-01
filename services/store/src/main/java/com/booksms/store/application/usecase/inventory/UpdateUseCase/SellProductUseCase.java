@@ -1,10 +1,9 @@
 package com.booksms.store.application.usecase.inventory.UpdateUseCase;
 
 import com.booksms.store.application.model.SellProductModel;
-import com.booksms.store.application.model.UpdateQuantityModel;
 import com.booksms.store.core.domain.entity.Inventory;
 import com.booksms.store.core.domain.entity.InventoryBook;
-import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
+import com.booksms.store.core.domain.exception.BookException.BookNotFoundException;
 import com.booksms.store.core.domain.exception.InSufficientQuantityException;
 import com.booksms.store.core.domain.exception.InventoryNotExistedException;
 import com.booksms.store.core.domain.repository.IInventoryRepository;

@@ -5,6 +5,7 @@ import com.bookms.order.application.model.PaymentModel;
 import com.bookms.order.application.usecase.impl.CreateOrderUseCase;
 import com.bookms.order.application.usecase.impl.PreCreateOrderUseCase;
 import com.bookms.order.core.domain.Entity.OrderType;
+import com.bookms.order.core.domain.Entity.Status;
 import com.bookms.order.core.domain.Exception.InvalidToken;
 import com.bookms.order.core.domain.State.PaymentMethod;
 import com.bookms.order.infrastructure.serviceGateway.impl.MarketingServiceGateway;
@@ -49,7 +50,7 @@ public class CreateOrderService implements ICreateOrderService {
 
         ordersModel.setRecipient(request.getRecipient());
         ordersModel.setInventoryId(1);
-        if(request.getOrderType().equals(OrderType.SELL)){
+        if(request.getOrderType().equals(OrderType.SELL) && request.getStatus().equals(SHIPPING)){
             kafkaTemplate.send("order-created", ordersModel);
         }
         return ordersModel;
