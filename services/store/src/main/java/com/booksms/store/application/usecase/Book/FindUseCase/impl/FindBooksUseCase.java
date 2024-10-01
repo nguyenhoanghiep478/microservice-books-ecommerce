@@ -3,7 +3,7 @@ package com.booksms.store.application.usecase.Book.FindUseCase.impl;
 import com.booksms.store.application.model.SearchCriteria;
 import com.booksms.store.application.usecase.Book.FindUseCase.IFindBookUseCase;
 import com.booksms.store.core.domain.entity.Book;
-import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
+import com.booksms.store.core.domain.exception.BookException.BookNotFoundException;
 import com.booksms.store.core.domain.repository.IBookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

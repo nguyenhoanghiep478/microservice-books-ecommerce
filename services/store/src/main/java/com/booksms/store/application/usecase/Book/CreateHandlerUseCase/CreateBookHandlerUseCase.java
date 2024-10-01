@@ -1,10 +1,8 @@
 package com.booksms.store.application.usecase.Book.CreateHandlerUseCase;
 
 import com.booksms.store.application.model.BookModel;
-import com.booksms.store.application.model.CategorySearchCriteria;
 import com.booksms.store.application.usecase.Book.CreateUseCase.CreateBookUseCase;
 import com.booksms.store.application.usecase.Book.UpdateUseCase.UpdateBookUseCase;
-import com.booksms.store.application.usecase.Category.FindCategoryUseCase;
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.core.domain.exception.MissingArgumentException;
 import com.booksms.store.core.domain.repository.IBookRepository;

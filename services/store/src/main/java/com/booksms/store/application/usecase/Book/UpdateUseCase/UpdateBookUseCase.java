@@ -2,10 +2,13 @@ package com.booksms.store.application.usecase.Book.UpdateUseCase;
 
 import com.booksms.store.application.model.BookModel;
 import com.booksms.store.application.model.CategorySearchCriteria;
+import com.booksms.store.application.model.SearchCriteria;
 import com.booksms.store.application.usecase.Category.FindCategoryUseCase;
+import com.booksms.store.application.usecase.category.FindCategoryUseCase;
 import com.booksms.store.application.usecase.state.UtilsUseCase;
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.core.domain.entity.Category;
+import com.booksms.store.core.domain.exception.BookException.BookNotFoundException;
 import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
 import com.booksms.store.core.domain.exception.InSufficientQuantityException;
 import com.booksms.store.core.domain.exception.UpdateFailureException;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.booksms.store.core.domain.constant.STATIC_VAR.IMAGE_STORAGE_PATH;
 
@@ -28,7 +32,6 @@ public class UpdateBookUseCase {
     private final UtilsUseCase utilsUseCase;
 
 
-    @Override
     @Transactional(rollbackFor = BookNotFoundException.class)
     public Book execute(@NotNull BookModel request) throws IOException {
         //check book
@@ -53,9 +56,12 @@ public class UpdateBookUseCase {
                 oldBook.setTitle(newBook.getTitle());
             }
             if(newBook.getCategoryId() != null){
-               Category category = findCategoryUseCase.execute(CategorySearchCriteria.builder()
-                                .id(newBook.getCategoryId())
-                        .build());
+               Category category = findCategoryUseCase.execute(
+                               List.of(SearchCriteria.builder()
+                                               .key("id")
+                                               .operation(":")
+                                               .value(newBook.getCategoryId())
+                                       .build())).get(0);
                 oldBook.setCategory(category);
             }
             if(newBook.getDistributorId() != null){

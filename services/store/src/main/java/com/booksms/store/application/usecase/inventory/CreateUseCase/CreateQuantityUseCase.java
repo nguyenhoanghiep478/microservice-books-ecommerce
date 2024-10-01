@@ -1,16 +1,14 @@
 package com.booksms.store.application.usecase.inventory.CreateUseCase;
 
-import com.booksms.store.application.model.BookModel;
 import com.booksms.store.application.model.CreateQuantityModel;
 import com.booksms.store.application.model.SearchCriteria;
-import com.booksms.store.application.usecase.Book.CreateUseCase.CreateBookUseCase;
 import com.booksms.store.application.usecase.Book.CreateUseCase.CreateInventoryBookUseCase;
 import com.booksms.store.application.usecase.Book.FindUseCase.IFindBookUseCase;
 import com.booksms.store.application.usecase.Book.UpdateUseCase.BookStartSellUseCase;
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.core.domain.entity.Inventory;
 import com.booksms.store.core.domain.entity.InventoryBook;
-import com.booksms.store.core.domain.exception.BookExpcetion.BookNotFoundException;
+import com.booksms.store.core.domain.exception.BookException.BookNotFoundException;
 import com.booksms.store.core.domain.exception.CreateFailureException;
 import com.booksms.store.core.domain.exception.InventoryNotExistedException;
 import com.booksms.store.core.domain.repository.IBookRepository;
@@ -18,7 +16,6 @@ import com.booksms.store.core.domain.repository.IInventoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Component
