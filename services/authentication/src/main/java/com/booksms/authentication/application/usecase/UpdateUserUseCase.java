@@ -65,12 +65,12 @@ public class UpdateUserUseCase implements BaseUsecase<UserModel, UserModel> {
             credential.setPassword(userModel.getPassword());
         }
         if(userModel.getIsFirstVisit() != null){
-            credential.setFirstVisit(userModel.getIsFirstVisit());
+            credential.setIsFirstVisit(userModel.getIsFirstVisit());
         }
         if(userModel.getIsBlocked() != null){
             credential.setIsBlocked(userModel.getIsBlocked());
         }
-        if(userModel.getRoleName() != null){
+        if(userModel.getRoleName()!=null && !userModel.getRoleName().isBlank()){
             SearchUserCriteria searchUserCriteria = SearchUserCriteria.builder()
                     .key("name")
                     .operation(":")

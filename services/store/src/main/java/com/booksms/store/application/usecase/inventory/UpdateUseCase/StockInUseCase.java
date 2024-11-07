@@ -23,7 +23,6 @@ public class StockInUseCase {
     private final CreateBookUseCase createBookUseCase;
     private final CreateQuantityUseCase createQuantityUseCase;
     private final FindBooksUseCase findBooksUseCase;
-    private final CreateInventoryUseCase createInventoryUseCase;
 
     @Transactional(rollbackOn = Exception.class)
     public void execute(StockInModel model) {

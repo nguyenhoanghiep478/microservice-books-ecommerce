@@ -43,6 +43,11 @@ public class BookAnonymousController {
         return ResponseEntity.ok(ResponseDTO.builder().message(List.of("getAllBookSuccessful")).status(201).result(results).build());
     }
 
+    @GetMapping("/get-all-book-in-stock")
+    public ResponseEntity<?> GetAllBooksInStock() throws IOException {
+        List<BookResponseDTO> results = this.service.findAllBookInStock();
+        return ResponseEntity.ok(ResponseDTO.builder().message(List.of("getAllBookSuccessful")).status(201).result(results).build());
+    }
     @PostMapping({"/get-all-by-ids"})
     public ResponseEntity<?> GetAllBookByIds(@RequestBody Set<Integer> ids) {
         List<ShortBookDTO> results = this.service.findAllByIds(ids);

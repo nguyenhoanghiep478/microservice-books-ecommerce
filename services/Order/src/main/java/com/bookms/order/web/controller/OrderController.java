@@ -116,6 +116,17 @@ public class OrderController {
         );
     }
 
+    @PutMapping("/cancel-order/{orderNumber}")
+    public ResponseEntity<?> CancelOrder(@PathVariable("orderNumber") Long orderNumber) {
+        OrderDTO response = service.cancelOrderByOrderNumber(orderNumber);
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message(Arrays.asList("cancel order successful"))
+                .status(200)
+                .result(response)
+                .build()
+        );
+    }
+
     @PostMapping("/pay-order")
     public ResponseEntity<?> PayOrder(@RequestBody OrderDTO request) {
         PaymentModel paymentModel = service.prePay(request);

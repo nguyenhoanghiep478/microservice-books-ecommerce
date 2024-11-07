@@ -47,7 +47,11 @@ public class FindBookService implements IFindBookService {
                 .operation(":")
                 .value(true)
                 .build();
-        return findBooksUseCase.execute(List.of(findByName,withIsInStock)).get(0);
+       List<Book> list =  findBooksUseCase.execute(List.of(findByName,withIsInStock));
+       if(list.isEmpty()){
+           return null;
+       }
+       return list.get(0);
     }
 
     @Override

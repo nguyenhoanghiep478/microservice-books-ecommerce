@@ -17,4 +17,5 @@ public class OrdersDTO {
     private OrderType orderType;
     private Integer inventoryId;
     private Integer customerId;
+    private Boolean isReStockInCancelledOrder;
 }

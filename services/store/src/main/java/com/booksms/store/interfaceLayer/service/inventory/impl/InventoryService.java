@@ -27,4 +27,9 @@ public class InventoryService implements IInventoryService {
     public void updateInventory(Integer inventoryId, UpdateInventoryDTO updateInventoryDTO) {
         updateInventoryService.updateInventory(inventoryId,updateInventoryDTO);
     }
+
+    @Override
+    public void reStockAfterCancel(Integer inventoryId, UpdateInventoryDTO build) {
+        updateInventoryService.reStockAfterCancel(inventoryId,build);
+    }
 }

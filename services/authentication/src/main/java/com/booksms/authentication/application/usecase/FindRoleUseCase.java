@@ -16,7 +16,6 @@ public class FindRoleUseCase {
     public List<Role> execute(List<SearchUserCriteria> criteriaList) {
         if(criteriaList == null || criteriaList.isEmpty()) {
             return repository.findAll();
-        }
-        return repository.findByCriteria(criteriaList);
+        }return repository.findByCriteria(criteriaList);
     }
 }

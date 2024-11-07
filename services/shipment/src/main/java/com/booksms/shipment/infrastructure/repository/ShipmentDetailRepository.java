@@ -32,4 +32,9 @@ public class ShipmentDetailRepository extends AbstractRepository<ShipmentDetails
     public ShipmentDetails save(ShipmentDetails mergedShipmentDetail) {
         return shipmentDetailJpaRepository.save(mergedShipmentDetail);
     }
+
+    @Override
+    public void deleteById(Integer shipmentId) {
+        shipmentDetailJpaRepository.deleteById(shipmentId);
+    }
 }

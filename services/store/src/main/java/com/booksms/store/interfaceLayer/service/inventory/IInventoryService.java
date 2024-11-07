@@ -11,4 +11,6 @@ public interface IInventoryService {
 
 
     void updateInventory(Integer inventoryId, UpdateInventoryDTO updateInventoryDTO);
+
+    void reStockAfterCancel(Integer inventoryId, UpdateInventoryDTO build);
 }

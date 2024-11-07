@@ -1,5 +1,7 @@
 package com.booksms.authentication.web.controller;
 
+import com.booksms.authentication.interfaceLayer.DTO.Request.AdminRegisterRequest;
+import com.booksms.authentication.interfaceLayer.DTO.Request.RegisterRequest;
 import com.booksms.authentication.interfaceLayer.DTO.Request.UpdateUserRequest;
 import com.booksms.authentication.interfaceLayer.DTO.Request.UserDTO;
 import com.booksms.authentication.interfaceLayer.DTO.Response.AuthResponse;
@@ -47,6 +49,18 @@ public class AuthController {
         return ResponseEntity.ok(ResponseDTO.builder()
                 .status(200)
                 .message(Collections.singletonList("update successful"))
+                .result(response)
+                .build());
+    }
+
+    @PostMapping("/create-user-by-admin")
+    public ResponseEntity<ResponseDTO> createUserByAdmin(@ModelAttribute AdminRegisterRequest request, // Nhận các field không phải file
+                                                         @RequestPart(value = "image", required = false) MultipartFile image ){
+       request.setImage(image);
+        UserDTO response = authService.registerByAdmin(request);
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .status(200)
+                .message(Collections.singletonList("create user successful"))
                 .result(response)
                 .build());
     }

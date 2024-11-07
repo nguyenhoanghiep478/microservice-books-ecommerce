@@ -28,6 +28,11 @@ public class KafkaConfig {
     }
 
     @Bean
+    public NewTopic cancelOrder(){
+        return new NewTopic("cancel-order", 1, (short) 1);
+    }
+
+    @Bean
     public JsonMessageConverter jsonMessageConverter() {
         return new JsonMessageConverter();
     }

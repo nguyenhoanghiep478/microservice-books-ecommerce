@@ -14,4 +14,6 @@ public interface IUpdateInventoryService {
     void stockInProductAtInventory(int inventoryId, StockInDTO request);
 
     void updateInventory(Integer inventoryId, UpdateInventoryDTO updateInventoryDTO);
+
+    void reStockAfterCancel(Integer inventoryId, UpdateInventoryDTO build);
 }

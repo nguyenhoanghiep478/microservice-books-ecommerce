@@ -30,4 +30,6 @@ public interface IAuthService {
     UserResponseDTO updateUser(UpdateUserRequest userDTO) throws IOException;
 
     void deleteUserById(Integer id,Boolean state);
+
+    UserDTO registerByAdmin(AdminRegisterRequest request);
 }

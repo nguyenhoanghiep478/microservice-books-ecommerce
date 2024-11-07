@@ -4,6 +4,7 @@ import com.bookms.order.application.BaseUseCase;
 import com.bookms.order.application.model.BookModel;
 import com.bookms.order.application.model.OrdersModel;
 import com.bookms.order.core.domain.Entity.Orders;
+import com.bookms.order.core.domain.Exception.BookNotInStockException;
 import com.bookms.order.core.domain.Exception.OrderExistException;
 import com.bookms.order.core.domain.Exception.PriceNotTheSameException;
 import com.bookms.order.core.domain.Exception.TotalPriceNotTheSameException;
@@ -57,6 +58,9 @@ public class PreCreateOrderUseCase implements BaseUseCase<OrdersModel, OrdersMod
             BigDecimal orderPrice = order.getOrderItems().get(i).getPrice().stripTrailingZeros();
             if(!price.equals(orderPrice) ){
                 throw new PriceNotTheSameException(String.format("price for item %s not the same with store",bookModels.get(i).getName()));
+            }
+            if(!bookModels.get(i).getIsInStock()){
+                throw new BookNotInStockException("Book is not in stock");
             }
             totalPrice = totalPrice.add(price.multiply(BigDecimal.valueOf(order.getOrderItems().get(i).getTotalQuantity())));
 

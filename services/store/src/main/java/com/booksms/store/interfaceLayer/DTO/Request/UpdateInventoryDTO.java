@@ -15,4 +15,5 @@ public class UpdateInventoryDTO {
     private BigDecimal salePrice;
     private BigDecimal purchasePrice;
     private Integer employeeId;
+    private Boolean isReStockInCancelledOrder;
 }

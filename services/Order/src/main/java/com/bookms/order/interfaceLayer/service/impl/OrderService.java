@@ -4,9 +4,12 @@ import com.bookms.order.application.model.*;
 import com.bookms.order.application.servicegateway.IAuthServiceGateway;
 import com.bookms.order.application.usecase.impl.FindBookUtils;
 import com.bookms.order.core.domain.Entity.OrderItems;
+import com.bookms.order.core.domain.Entity.Status;
+import com.bookms.order.infrastructure.serviceGateway.IShipmentServiceGateway;
 import com.bookms.order.interfaceLayer.DTO.*;
 import com.bookms.order.core.domain.Entity.Orders;
 import com.bookms.order.interfaceLayer.DTO.Request.StockInOrderDTO;
+import com.bookms.order.interfaceLayer.DTO.respone.ShipmentDetailsResponse;
 import com.bookms.order.interfaceLayer.service.ICreateOrderService;
 import com.bookms.order.interfaceLayer.service.IFindOrderService;
 import com.bookms.order.interfaceLayer.service.IOrderService;
@@ -14,6 +17,7 @@ import com.bookms.order.core.domain.Exception.BookNotFoundException;
 import com.bookms.order.core.domain.Exception.InSufficientQuantityException;
 import com.bookms.order.core.domain.Exception.OrderExistException;
 import com.bookms.order.core.domain.Exception.OrderNotFoundException;
+import com.bookms.order.interfaceLayer.service.IUpdateOrderService;
 import com.bookms.order.web.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +37,8 @@ import java.util.stream.Collectors;
 public class OrderService implements IOrderService {
     private final ICreateOrderService createOrderService;
     private final IFindOrderService findOrderService;
+    private final IUpdateOrderService updateOrderService;
+    private final IShipmentServiceGateway shipmentServiceGateway;
     private final ModelMapper modelMapper;
     private final IAuthServiceGateway authServiceGateway;
     private final FindBookUtils findBookUtils;
@@ -43,17 +49,31 @@ public class OrderService implements IOrderService {
         List<Orders> orders = findOrderService.findAll();
         Set<Integer> customerIds = new HashSet<>();
         Set<Integer> bookIds = new HashSet<>();
+        Set<Integer> shipmentIds = new HashSet<>();
         for (Orders order : orders) {
             customerIds.add(order.getCustomerId());
             result.add(modelMapper.map(order, OrderDTO.class));
             bookIds.addAll(order.getOrderItems().stream().map(OrderItems::getBookId).collect(Collectors.toSet()));
+            shipmentIds.add(order.getShipmentId());
         }
 
         Map<Integer, String> mapCustomerIdToName = getMapEmployeeIdToName(customerIds);
         Map<Integer,BookModel> mapBookIdToBookModel = getMapBookIdToBookModel(bookIds);
-
+        //getShipmentToGetAddress
+        Map<Integer, ShipmentDetailsResponse> mapShipmentIdToShipmentDetails = getMapShipmentIdToShipmentDetails(shipmentIds);
        return result.stream()
                .peek(item -> {
+                   if(item.getShipmentId() != null){
+                        ShipmentDetailsResponse details = mapShipmentIdToShipmentDetails.get(item.getShipmentId());
+                        if(details != null){
+                            item.setDestinationAddress(details.getDestinationAddress());
+                            item.setOriginAddress(details.getOriginAddress());
+                            item.setCurrentAddress(details.getCurrentAddress());
+                            item.setShipmentFee(details.getTotalFee());
+                        }
+
+                   }
+
                    item.setCustomerName(mapCustomerIdToName.get(item.getCustomerId()));
                    item.getOrderItems().stream()
                            .peek(orderItem -> {
@@ -172,10 +192,12 @@ public class OrderService implements IOrderService {
         List<StockInOrderDTO> result = new ArrayList<>();
         Set<Integer> bookIds = new HashSet<>();
         Set<Integer> employeeIds = new HashSet<>();
+        Set<Integer> shipmentIds = new HashSet<>();
         for(Orders order : orders) {
             OrderItems item = order.getOrderItems().get(0);
             bookIds.add(item.getBookId());
             employeeIds.add(order.getCustomerId());
+            shipmentIds.add(order.getShipmentId());
             result.add(
                     StockInOrderDTO.builder()
                         .quantity(item.getTotalQuantity())
@@ -192,6 +214,8 @@ public class OrderService implements IOrderService {
         //getCustomerModelToGetCustomerName
         Map<Integer,String> mapEmployeeIdToName = getMapEmployeeIdToName(employeeIds);
 
+        //getShipmentToGetAddress
+        Map<Integer, ShipmentDetailsResponse> mapShipmentIdToShipmentDetails = getMapShipmentIdToShipmentDetails(shipmentIds);
         return result.stream()
                 .peek(item-> {
                     BookModel model = mapBookIdToName.get(item.getProductId());
@@ -201,6 +225,35 @@ public class OrderService implements IOrderService {
                     item.setEmployeeName(employeeName);
                 })
                 .toList();
+    }
+
+
+
+    @Override
+    public OrderDTO cancelOrderById(int id) {
+        Orders orders = updateOrderService.cancelOrderById(id);
+        return modelMapper.map(orders,OrderDTO.class);
+    }
+
+    @Override
+    public OrderDTO cancelOrderByOrderNumber(Long orderNumber) {
+        Orders orders = updateOrderService.cancelOrderByOrderNumber(orderNumber);
+        return modelMapper.map(orders,OrderDTO.class);
+    }
+
+    private Map<Integer, ShipmentDetailsResponse> getMapShipmentIdToShipmentDetails(Set<Integer> shipmentIds) {
+       Map<Integer, ShipmentDetailsResponse> mapShipmentIdToShipmentDetails = new HashMap<>();
+        for(Integer shipmentId : shipmentIds) {
+            if(shipmentId == null){
+                continue;
+            }
+            ShipmentDetailsResponse response = shipmentServiceGateway.findShipmentById(shipmentId);
+            if(response == null){
+                continue;
+            }
+            mapShipmentIdToShipmentDetails.put(shipmentId, response);
+        }
+        return mapShipmentIdToShipmentDetails;
     }
 
     private Map<Integer,String> getMapEmployeeIdToName(Set<Integer> employeeIds){

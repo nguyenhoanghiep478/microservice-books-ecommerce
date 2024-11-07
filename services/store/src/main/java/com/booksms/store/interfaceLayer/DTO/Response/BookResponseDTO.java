@@ -17,7 +17,7 @@ public class BookResponseDTO {
     private Integer id;
     private String title;
     private String name;
-    private Integer categoryId;
+    private String category;
     private Integer distributorId;
     private BigDecimal price;
     private BigDecimal salePrice;

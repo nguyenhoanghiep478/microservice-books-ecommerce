@@ -15,11 +15,12 @@ public class UserModel {
     private String lastName;
     private String email;
     private String phone;
-    private String address;
+    private Integer address;
     private String password;
     private Boolean isVerified;
     private Boolean isFirstVisit;
     private Boolean isBlocked;
     private String roleName;
     private String image;
+    private Boolean isAdminRegister;
 }

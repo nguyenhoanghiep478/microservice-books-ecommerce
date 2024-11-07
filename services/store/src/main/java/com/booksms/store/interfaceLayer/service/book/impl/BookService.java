@@ -2,6 +2,7 @@ package com.booksms.store.interfaceLayer.service.book.impl;
 
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.core.domain.entity.InventoryBook;
+import com.booksms.store.core.domain.exception.BookException.BookExistedException;
 import com.booksms.store.core.domain.exception.BookException.BookNotFoundException;
 import com.booksms.store.infrastructure.JpaRepository.BookJpaRepository;
 import com.booksms.store.interfaceLayer.DTO.Request.BookRequestDTO;
@@ -40,6 +41,9 @@ public class BookService implements IBookService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BookRequestDTO insert(BookRequestDTO request) throws IOException {
+        if(findBookService.findByName(request.getName()) != null){
+            throw new BookExistedException(String.format("Book with name %s already exists", request.getName()));
+        }
         Book book = createBookService.insert(request);
 
         return modelMapper.map(book, BookRequestDTO.class);
@@ -183,11 +187,18 @@ public class BookService implements IBookService {
        }).toList();
     }
 
+    @Override
+    public List<BookResponseDTO> findAllBookInStock() throws IOException {
+        List<Book> books = findBookService.findAllInStock();
+        return toResponse(books);
+    }
+
     private List<BookResponseDTO> toResponse(List<Book> books) throws IOException {
         List<BookResponseDTO> response = new ArrayList<>();
         for (Book book : books) {
             BookResponseDTO bookRequestDTO = modelMapper.map(book, BookResponseDTO.class);
             bookRequestDTO.setImage(imageService.getImageBase64(book.getImage()));
+            bookRequestDTO.setCategory(book.getCategory().getName());
 
             response.add(bookRequestDTO);
         }

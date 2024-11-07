@@ -49,7 +49,10 @@ public class AddressService implements IAddressService {
         kafkaTemplate.send("create-shipment",shipmentModel);
 
     }
-
+    @KafkaListener(id = "consumer-address-register",topics = "UserRegister")
+    public void createAddressForUser(CreateAddressDTO createAddressDTO){
+        createAddress(createAddressDTO);
+    }
 
 
     private String getTrackingNumber() {
@@ -80,7 +83,9 @@ public class AddressService implements IAddressService {
         addressModel.setState(fieldAddress[1]);
         addressModel.setCity(fieldAddress[2]);
         addressModel.setZip("700000");
-
+        if(address.getAddressId() != null){
+            addressModel.setId(address.getAddressId());
+        }
         return createAddressService.createAddress(addressModel);
     }
 }

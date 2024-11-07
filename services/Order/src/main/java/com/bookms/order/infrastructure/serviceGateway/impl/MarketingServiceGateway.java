@@ -1,5 +1,6 @@
 package com.bookms.order.infrastructure.serviceGateway.impl;
 
+import com.bookms.order.core.domain.Exception.InvalidToken;
 import com.bookms.order.infrastructure.FeignClient.MarketingClient;
 import com.bookms.order.interfaceLayer.DTO.Request.VerifyUserDTO;
 import com.bookms.order.interfaceLayer.DTO.ResponseDTO;
@@ -16,12 +17,20 @@ public class MarketingServiceGateway {
 
     public Boolean validateToken(Long token) {
        log.info(token.toString());
-       ResponseEntity<ResponseDTO> response = marketingClient.validateToken(VerifyUserDTO.builder()
-                       .email(null)
-                       .token(token)
-               .build());
-       ResponseDTO body = response.getBody();
-        assert body != null;
-        return body.getResult().equals("successful");
+       try{
+           ResponseEntity<ResponseDTO> response = marketingClient.validateToken(VerifyUserDTO.builder()
+                   .email(null)
+                   .token(token)
+                   .build());
+           ResponseDTO body = response.getBody();
+           assert body != null;
+           return body.getResult().equals("successful");
+        }catch (Exception e){
+           log.error(e.getMessage());
+           throw new InvalidToken("invalid token please try again");
+       }
+
+
+
     }
 }

@@ -15,4 +15,6 @@ public class NewUserRegister {
     private Boolean isVerified;
     private Boolean isFirstVisit;
     private Boolean isBlocked;
+    private String address;
+    private Integer addressId;
 }

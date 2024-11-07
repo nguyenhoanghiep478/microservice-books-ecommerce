@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateAddressDTO {
-    String address;
+    private String address;
+    private Integer addressId;
 }

@@ -37,8 +37,11 @@ public class OrderDTO {
     private Integer originAddressId;
     @NotNull(message = "destination address is required")
     private String destinationAddress;
+    private String originAddress;
     @NotNull(message = "shipment fee is required")
     private double shipmentFee;
     @NotNull(message = "distance is required for shipment")
     private double distance;
+    private Integer shipmentId;
+    private String currentAddress;
 }

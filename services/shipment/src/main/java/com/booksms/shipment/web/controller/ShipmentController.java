@@ -44,6 +44,8 @@ public class ShipmentController {
                 .build());
     }
 
+
+
     @PutMapping("/update-by-id/{id}")
     public ResponseEntity<?> updateShipmentDetail(@PathVariable("id") Integer id ,@RequestBody UpdateShipmentDetailDTO request){
         ShipmentDetailsResponse response = shipmentService.updateById(id,request);

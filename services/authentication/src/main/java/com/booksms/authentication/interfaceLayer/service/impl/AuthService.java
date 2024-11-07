@@ -3,10 +3,7 @@ package com.booksms.authentication.interfaceLayer.service.impl;
 import com.booksms.authentication.application.model.PermissionModel;
 import com.booksms.authentication.application.model.SearchUserCriteria;
 import com.booksms.authentication.application.model.UserModel;
-import com.booksms.authentication.application.usecase.FindUserUseCase;
-import com.booksms.authentication.application.usecase.GetPermissionUseCase;
-import com.booksms.authentication.application.usecase.RegisterUseCase;
-import com.booksms.authentication.application.usecase.UpdateUserUseCase;
+import com.booksms.authentication.application.usecase.*;
 import com.booksms.authentication.core.entity.Role;
 import com.booksms.authentication.core.entity.UserCredential;
 import com.booksms.authentication.core.exception.*;
@@ -25,7 +22,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseCookie;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +35,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import static com.booksms.authentication.core.constant.STATIC_VAR.MAX_FAILED_ATTEMPTS;
 
 @Service
 @AllArgsConstructor
@@ -51,6 +52,7 @@ public class AuthService  implements IAuthService {
     private final KafkaTemplate<String, NewUserRegister> kafkaTemplate;
     private final KafkaTemplate<String, UserDTO> kafkaResetPasswordTemplate;
     private final UpdateUserUseCase updateUserUseCase;
+    private final HandleFailedAttemptLoginUseCase handleFailedAttemptLoginUseCase;
     private final RedisService redisService;
     private final IImageService imageService;
 
@@ -109,45 +111,53 @@ public class AuthService  implements IAuthService {
 
     @Override
     public AuthResponse login(AuthRequest request) {
-       Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
-       ));
-
-       if(authentication.isAuthenticated()){
-            UserCredential userCredential = findUserUseCase.execute(List.of(SearchUserCriteria.builder()
-                            .key("email")
-                            .operation(":")
-                            .value(request.getEmail())
-                            .build()))
-                    .get(0);
-            if(userCredential.getIsBlocked()){
-                throw new UserBlockedException(String.format("User %s is blocked", userCredential.getEmail()));
-            }
-            if(!userCredential.getIsVerified()){
-                kafkaTemplate.send("UserRegister", NewUserRegister.builder()
-                        .firstName(userCredential.getFirstName())
-                        .lastName(userCredential.getLastName())
-                        .isVerified(false)
-                        .isFirstVisit(true)
-                        .isBlocked(false)
-                        .recipient(userCredential.getEmail())
-                        .build());
-                throw new UserNotVerifiedException(String.format("User %s is not verified", userCredential.getEmail()));
-            }
-          return AuthResponse.builder()
-                  .accessToken(generateToken(request.getEmail()))
-                  .refreshToken(ResponseCookie.from("refresh-token",generateRefreshToken(request.getEmail()))
-                          .httpOnly(true)
-                          .secure(true)
-                          .path("/")
-                          .build())
-                  .profile(findById(userCredential.getId()))
-                  .build();
-       }else{
-           throw new RuntimeException("Authentication Failed");
-       }
-
+        UserCredential userCredential = findUserUseCase.execute(List.of(SearchUserCriteria.builder()
+                        .key("email")
+                        .operation(":")
+                        .value(request.getEmail())
+                        .build()))
+                .get(0);
+      try {
+          Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                  request.getEmail(),
+                  request.getPassword()
+          ));
+              handleFailedAttemptLoginUseCase.resetFailedAttempts(userCredential);
+              if(userCredential.getIsBlocked()){
+                  throw new UserBlockedException(String.format("User %s is blocked", userCredential.getEmail()));
+              }
+              if(!userCredential.getIsVerified()){
+                  kafkaTemplate.send("UserRegister", NewUserRegister.builder()
+                          .firstName(userCredential.getFirstName())
+                          .lastName(userCredential.getLastName())
+                          .isVerified(false)
+                          .isFirstVisit(true)
+                          .isBlocked(false)
+                          .recipient(userCredential.getEmail())
+                          .build());
+                  throw new UserNotVerifiedException(String.format("User %s is not verified", userCredential.getEmail()));
+              }
+              return AuthResponse.builder()
+                      .accessToken(generateToken(request.getEmail()))
+                      .refreshToken(ResponseCookie.from("refresh-token",generateRefreshToken(request.getEmail()))
+                              .httpOnly(true)
+                              .secure(true)
+                              .path("/")
+                              .build())
+                      .profile(findById(userCredential.getId()))
+                      .build();
+      }catch (BadCredentialsException e){
+          if(userCredential == null){
+              throw new UserNotFoundException("please check your email");
+          }
+          handleFailedAttemptLoginUseCase.increaseFailedAttempts(userCredential);
+          if (userCredential.getFailAttempt() >= MAX_FAILED_ATTEMPTS) {
+              handleFailedAttemptLoginUseCase.lockUser(userCredential);
+               throw new UserBlockedException("you has been blocked because login failed too much time");
+          }else{
+              throw new UserNotFoundException("please check you password");
+          }
+      }
     }
 
     private String generateRefreshToken(String email) {
@@ -235,6 +245,7 @@ public class AuthService  implements IAuthService {
     @Override
     public void updatePassword(ResetPasswordRequest request) {
         UserDTO userDTO = redisService.getValue(request.getId());
+        redisService.removeValue(request.getId());
         userDTO.setImage(null);
         userDTO.setId(null);
         UserModel userModel = modelMapper.map(userDTO, UserModel.class);
@@ -261,10 +272,16 @@ public class AuthService  implements IAuthService {
 
     @Override
     public UserResponseDTO updateUser(UpdateUserRequest request) throws IOException {
-        String imagePath = imageService.handleImageToPath(request.getImage(),request.getEmail());
         UserModel userCredential = modelMapper.map(request,UserModel.class);
-        userCredential.setImage(imagePath);
+        if(request.getImage() != null){
+            String imagePath = imageService.handleImageToPath(request.getImage(),request.getEmail());
+            userCredential.setImage(imagePath);
+        }
+        if(request.getPassword() != null){
+            userCredential.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
          updateUserUseCase.execute(userCredential);
+
         return map(List.of(modelMapper.map(userCredential, UserCredential.class))).get(0);
     }
 
@@ -274,6 +291,48 @@ public class AuthService  implements IAuthService {
                         .id(id)
                         .isBlocked(state)
                 .build());
+    }
+
+    @Override
+    public UserDTO registerByAdmin(AdminRegisterRequest request) {
+        try{
+
+            String address = null;
+            request.setPassword(passwordEncoder.encode(request.getPassword()));
+            if(request.getAddress() != null){
+                address = request.getAddress();
+                request.setAddress(null);
+            }
+            UserModel userModel = modelMapper.map(request,UserModel.class);
+            userModel.setIsAdminRegister(true);
+            if(address != null){
+                Random random = new Random();
+                userModel.setAddress(random.nextInt());
+            }
+            userModel.setImage(imageService.handleImageToPath(request.getImage(),request.getEmail()));
+
+            var user = registerUseCase.execute(userModel);
+            kafkaTemplate.send("UserRegister", NewUserRegister.builder()
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .isVerified(true)
+                    .isFirstVisit(true)
+                    .isBlocked(false)
+                    .recipient(user.getEmail())
+                    .address(address)
+                    .addressId(userModel.getAddress())
+                    .build());
+            request.setId(user.getId());
+            return modelMapper.map(user, UserDTO.class);
+        }catch (EmailExistedException e){
+            log.error(e.getMessage());
+            throw new EmailExistedException(e.getMessage());
+        }catch (RegisterFailException e){
+            throw new RegisterFailException(e.getMessage());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            throw new InternalServerErrorException("please contact with administrator");
+        }
     }
 
     private List<UserResponseDTO> map(List<UserCredential> userCredentials) {
@@ -309,4 +368,16 @@ public class AuthService  implements IAuthService {
         user.setEmail(userRegister.getRecipient());
         updateUserUseCase.execute(user);
     }
+
+    @Scheduled(fixedRate = 60000) // Chạy mỗi 1 phút
+    public void unlockAccounts() {
+        List<UserCredential> userCredentials = findUserUseCase.execute(List.of(SearchUserCriteria.builder()
+                        .key("isBlocked")
+                        .operation(":")
+                        .value(true)
+                .build()));
+        List<UserCredential> blockedByFailedAttemptLogin = userCredentials.stream().filter(userCredential -> userCredential.getLockTime() != null).toList();
+        blockedByFailedAttemptLogin.forEach(handleFailedAttemptLoginUseCase::unlockUser);
+    }
+
 }

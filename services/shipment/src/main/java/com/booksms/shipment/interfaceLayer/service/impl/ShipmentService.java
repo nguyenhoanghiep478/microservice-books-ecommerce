@@ -89,6 +89,9 @@ public class ShipmentService implements IShipmentService {
     @Override
     public ShipmentDetailsResponse getById(Integer id) {
         ShipmentDetails entity = findShipmentDetailService.getById(id);
+        if(entity == null){
+            return null;
+        }
         return map(List.of(entity)).get(0);
     }
 

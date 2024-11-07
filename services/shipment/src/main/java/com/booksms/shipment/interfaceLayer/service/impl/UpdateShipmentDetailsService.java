@@ -3,10 +3,14 @@ package com.booksms.shipment.interfaceLayer.service.impl;
 import com.booksms.shipment.application.model.UpdateShipmentDetailModel;
 import com.booksms.shipment.application.usecase.UpdateShipmentDetailUseCase;
 import com.booksms.shipment.core.domain.entity.ShipmentDetails;
+import com.booksms.shipment.core.domain.repository.IShipmentDetailRepository;
 import com.booksms.shipment.infrastructure.serviceGateway.impl.AddressService;
+import com.booksms.shipment.interfaceLayer.dto.request.DeleteShipmentDetailByOrderCancel;
 import com.booksms.shipment.interfaceLayer.dto.request.UpdateShipmentDetailDTO;
 import com.booksms.shipment.interfaceLayer.service.IUpdateShipmentDetailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +18,12 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UpdateShipmentDetailsService implements IUpdateShipmentDetailService {
     private final UpdateShipmentDetailUseCase updateShipmentDetailUseCase;
     private final AddressService addressService;
     private final KafkaTemplate<String,Integer> kafkaTemplate;
+    private final IShipmentDetailRepository shipmentDetailRepository;
 
     @Override
     public ShipmentDetails updateById(Integer id, UpdateShipmentDetailDTO request) {
@@ -35,5 +41,11 @@ public class UpdateShipmentDetailsService implements IUpdateShipmentDetailServic
         }
 
         return result;
+    }
+
+    @KafkaListener(id = "consumer-cancelled-order", topics = "cancel-order")
+    public void deleteShipmentDetailsByCancelOrder(DeleteShipmentDetailByOrderCancel request){
+        log.info(request.toString());
+        shipmentDetailRepository.deleteById(request.getShipmentId());
     }
 }

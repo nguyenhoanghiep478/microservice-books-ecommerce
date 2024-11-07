@@ -4,6 +4,7 @@ import com.booksms.store.application.servicegateway.IKafkaService;
 import com.booksms.store.core.domain.exception.InSufficientQuantityException;
 import com.booksms.store.interfaceLayer.DTO.OrderItemDTO;
 import com.booksms.store.interfaceLayer.DTO.OrdersDTO;
+import com.booksms.store.interfaceLayer.DTO.Request.OrderType;
 import com.booksms.store.interfaceLayer.DTO.Request.UpdateInventoryDTO;
 import com.booksms.store.interfaceLayer.DTO.ResponseOrderCreated;
 import com.booksms.store.interfaceLayer.service.book.IBookService;
@@ -49,7 +50,20 @@ public class KafkaService implements IKafkaService {
                     .message(e.getMessage())
                     .build());
         }
+    }
 
-
+    @KafkaListener(id = "consumer-cancel-order",topics = "cancel-order")
+    @Transactional(rollbackFor = Exception.class)
+    public void reStockCancelledOrder(OrdersDTO ordersDTO) {
+        for (OrderItemDTO item : ordersDTO.getOrderItems()) {
+            inventoryService.reStockAfterCancel(ordersDTO.getInventoryId(), UpdateInventoryDTO.builder()
+                    .bookId(item.getBookId())
+                    .addOrMinusQuantity(item.getTotalQuantity())
+                    .salePrice(item.getPrice())
+                    .orderType(OrderType.BUY)
+                    .inventoryId(ordersDTO.getInventoryId())
+                    .purchasePrice(item.getPurchasePrice())
+                    .build());
+        }
     }
 }

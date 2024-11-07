@@ -20,12 +20,16 @@ public class ShipmentDetailService implements IFindShipmentDetailService {
 
     @Override
     public ShipmentDetails getById(Integer id) {
-        return findShipmentDetailUseCase.execute(List.of(
+         List<ShipmentDetails> shipmentDetails =findShipmentDetailUseCase.execute(List.of(
                 Criteria.builder()
                         .key("id")
                         .operator(":")
                         .value(id)
                         .build()
-        )).get(0);
+        ));
+         if(!shipmentDetails.isEmpty()){
+             return shipmentDetails.get(0);
+         }
+         return null;
     }
 }

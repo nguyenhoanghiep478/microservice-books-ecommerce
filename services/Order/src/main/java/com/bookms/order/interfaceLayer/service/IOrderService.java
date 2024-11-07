@@ -40,4 +40,8 @@ public interface IOrderService {
     List<OrderDTO> findByCustomerId(int id);
 
     List<StockInOrderDTO> getStockInOrder();
+
+    OrderDTO cancelOrderById(int id);
+
+    OrderDTO cancelOrderByOrderNumber(Long orderNumber);
 }

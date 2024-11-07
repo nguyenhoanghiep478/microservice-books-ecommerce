@@ -4,6 +4,7 @@ import com.booksms.store.application.model.CreateQuantityModel;
 import com.booksms.store.application.model.UpdateQuantityModel;
 import com.booksms.store.application.servicegateway.IKafkaService;
 import com.booksms.store.application.usecase.inventory.CreateUseCase.CreateQuantityUseCase;
+import com.booksms.store.application.usecase.inventory.UpdateUseCase.ReStockAfterCancelUseCase;
 import com.booksms.store.application.usecase.inventory.UpdateUseCase.UpdateQuantityUseCase;
 import com.booksms.store.core.domain.entity.Book;
 import com.booksms.store.interfaceLayer.DTO.OrderItemDTO;
@@ -24,7 +25,7 @@ public class UpdateInventoryService implements IUpdateInventoryService {
     private final CreateQuantityUseCase createQuantityUseCase;
     private final ModelMapper modelMapper;
     private final KafkaTemplate<String, OrdersDTO> orderKafkaTemplate;
-
+    private final ReStockAfterCancelUseCase reStockAfterCancelUseCase;
 
     @Override
     public Book createQuantity(CreateQuantityRequest request) {
@@ -64,17 +65,28 @@ public class UpdateInventoryService implements IUpdateInventoryService {
                 .inventoryId(inventoryId)
                 .purchasePrice(updateInventoryDTO.getPurchasePrice())
                 .build());
-        orderKafkaTemplate.send("stock-in",OrdersDTO.builder()
-                        .inventoryId(inventoryId)
-                        .orderType(OrderType.BUY)
-                        .orderItems(List.of(
-                                OrderItemDTO.builder()
-                                        .bookId(updateInventoryDTO.getBookId())
-                                        .totalQuantity(updateInventoryDTO.getAddOrMinusQuantity())
-                                        .price(updateInventoryDTO.getSalePrice())
-                                        .build()
-                        ))
-                        .customerId(updateInventoryDTO.getEmployeeId())
-                .build());
+        if(updateInventoryDTO.getOrderType().equals(OrderType.SELL)){
+            return;
+        }
+        if(updateInventoryDTO.getIsReStockInCancelledOrder() == null || !updateInventoryDTO.getIsReStockInCancelledOrder()) {
+            orderKafkaTemplate.send("stock-in",OrdersDTO.builder()
+                    .inventoryId(inventoryId)
+                    .orderType(OrderType.BUY)
+                    .orderItems(List.of(
+                            OrderItemDTO.builder()
+                                    .bookId(updateInventoryDTO.getBookId())
+                                    .totalQuantity(updateInventoryDTO.getAddOrMinusQuantity())
+                                    .price(updateInventoryDTO.getSalePrice())
+                                    .build()
+                    ))
+                    .customerId(updateInventoryDTO.getEmployeeId())
+                    .build());
+        }
+    }
+
+    @Override
+    public void reStockAfterCancel(Integer inventoryId, UpdateInventoryDTO build) {
+        build.setInventoryId(inventoryId);
+        reStockAfterCancelUseCase.execute(modelMapper.map(build,UpdateQuantityModel.class));
     }
 }

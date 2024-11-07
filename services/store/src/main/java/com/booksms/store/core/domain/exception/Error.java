@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 public enum Error {
     NO_CODE(0, "No code", HttpStatus.INTERNAL_SERVER_ERROR),
     BOOK_NOT_FOUND_EXCEPTION(400, "Book not found", HttpStatus.NOT_FOUND),
+    BOOK_EXISTED_EXCEPTION(400, "Book already existed", HttpStatus.CONFLICT),
     CATEGORY_NOT_FOUND_EXCEPTION(401, "Category not found exception", HttpStatus.NOT_FOUND),
     CATEGORY_EXISTED(402, "Category existed", HttpStatus.BAD_REQUEST),
     INSUFFICIENT_QUANTITY_EXCEPTION(403, "Insufficient quantity", HttpStatus.BAD_REQUEST),

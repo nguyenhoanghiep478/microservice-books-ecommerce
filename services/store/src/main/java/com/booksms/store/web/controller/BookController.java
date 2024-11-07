@@ -76,8 +76,6 @@ public class BookController {
             @RequestParam("image") MultipartFile image,
             @RequestParam("title") String title,
             @RequestParam("name") String name,
-            @RequestParam("price") Double price,
-            @RequestParam("quantity") Integer quantity,
             @RequestParam("selectedCategory") String selectedCategory) throws IOException {
         //create new book
         String[] splitName= name.split(" ");
@@ -87,12 +85,11 @@ public class BookController {
                 .image(image)
                 .title(title)
                 .name(name)
-                .price(BigDecimal.valueOf(price))
-                .availableQuantity(quantity)
+                .availableQuantity(0)
                 .categoryId(Integer.valueOf(selectedCategory))
                 .chapter(chapter)
                 .distributorId(1)
-                .isInStock(true)
+                .isInStock(false)
                 .build();
 
         BookRequestDTO result = service.insert(request);

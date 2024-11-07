@@ -1,5 +1,6 @@
 package com.booksms.store.core.domain.exception.RestExceptionHandler;
 
+import com.booksms.store.core.domain.exception.BookException.BookExistedException;
 import com.booksms.store.core.domain.exception.BookException.BookNotFoundException;
 import com.booksms.store.core.domain.exception.CategoryExistException;
 import com.booksms.store.core.domain.exception.CategoryNotFoundException;
@@ -11,10 +12,14 @@ import com.booksms.store.core.domain.exception.MissingArgumentException;
 import com.booksms.store.core.domain.exception.UpdateFailureException;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import static com.booksms.store.core.domain.exception.Error.BOOK_EXISTED_EXCEPTION;
 
 @ControllerAdvice
 public class GlobalRestException {
@@ -70,5 +75,18 @@ public class GlobalRestException {
     @ExceptionHandler({java.lang.Error.class})
     public ResponseEntity<ExceptionDTO> internalServerException(java.lang.Error e) {
         return ((ResponseEntity.BodyBuilder)ResponseEntity.status(Error.INTERNAL_ERROR.getHttpStatus()).header("Content-Type", new String[]{"application/json"})).body(ExceptionDTO.builder().code(Error.CATEGORY_NOT_FOUND_EXCEPTION.getCode()).errorDescription(Error.CATEGORY_NOT_FOUND_EXCEPTION.getDescription()).build());
+    }
+
+    @ExceptionHandler(BookExistedException.class)
+    public ResponseEntity<ExceptionDTO> bookExistedException(BookExistedException e) {
+        return ResponseEntity
+                .status(BOOK_EXISTED_EXCEPTION.getHttpStatus())
+                .body(
+                ExceptionDTO.builder()
+                        .error(e.getMessage())
+                        .code(BOOK_EXISTED_EXCEPTION.getCode())
+                        .errorDescription(BOOK_EXISTED_EXCEPTION.getDescription())
+                        .build()
+        );
     }
 }

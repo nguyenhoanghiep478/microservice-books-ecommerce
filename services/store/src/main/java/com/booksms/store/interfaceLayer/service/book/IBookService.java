@@ -40,4 +40,6 @@ public interface IBookService {
     List<BookResponseDTO> findTopSales() throws IOException;
 
     List<ProfitDTO> getProfitByIds(Integer inventoryId,Set<Integer> ids);
+
+    List<BookResponseDTO> findAllBookInStock() throws IOException;
 }

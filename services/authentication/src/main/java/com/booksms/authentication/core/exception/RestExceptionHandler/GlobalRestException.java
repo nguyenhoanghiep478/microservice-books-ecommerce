@@ -3,6 +3,7 @@ package com.booksms.authentication.core.exception.RestExceptionHandler;
 import com.booksms.authentication.core.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +41,21 @@ public class GlobalRestException {
                                 .build()
                 );
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ExceptionDTO> handleBadCredentials(BadCredentialsException e) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED) // 401 Unauthorized
+                .header("Content-Type", contentType)
+                .body(
+                        ExceptionDTO.builder()
+                                .code(401)
+                                .errorDescription("Invalid username or password") // Thông báo lỗi tùy chỉnh
+                                .error(e.getMessage())
+                                .build()
+                );
+    }
+
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

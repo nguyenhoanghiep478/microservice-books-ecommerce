@@ -11,4 +11,6 @@ public interface IShipmentDetailRepository {
     List<ShipmentDetails> findByCriteria(List<Criteria> criteriaList);
 
     ShipmentDetails save(ShipmentDetails mergedShipmentDetail);
+
+    void deleteById(Integer shipmentId);
 }
